@@ -3,7 +3,9 @@ package org.example.view;
 import org.example.model.Building;
 import org.example.model.Farm;
 import org.example.model.House;
+import org.example.model.Quarry;
 import org.example.model.Resource;
+
 
 import java.util.List;
 import java.util.Scanner;
@@ -54,6 +56,9 @@ public class ConsoleView {
                 buildings.add(new House());
                 System.out.println("House added!");
                 break;
+            case 3:
+                buildings.add(new Quarry());
+                System.out.println("Quarry added!");
             default:
                 System.out.println("Invalid choice. No building added.");
                 break;

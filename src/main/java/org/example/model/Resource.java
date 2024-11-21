@@ -17,11 +17,11 @@ public class Resource {
         return quantity;
     }
 
-    public void add(int amount) {
+    public void addQuantity(int amount) {
         this.quantity += amount;
     }
 
-    public boolean remove(int amount) {
+    public boolean removeQuantity(int amount) {
         if (quantity >= amount) {
             this.quantity -= amount;
             return true;

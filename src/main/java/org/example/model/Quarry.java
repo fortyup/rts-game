@@ -1,29 +1,29 @@
 package org.example.model;
 
-// Sous-classe Farm
-public class Farm extends Building {
-    public Farm() {
+// Sous-classe Quarry
+public class Quarry extends Building {
+    public Quarry() {
         super(
-                "Farm",
-                3,
-                3,
-                5,
-                3,
-                new Resource[]{new Resource("Wood", 5), new Resource("Stone", 5)},
+                "Quarry",
+                2,
+                2,
+                2,
+                30,
+                new Resource[]{new Resource("Wood", 50)},
                 new Resource[]{},
-                new Resource[]{new Resource("Food", 10)},
+                new Resource[]{new Resource("Stone", 4), new Resource("Iron", 4), new Resource("Coal", 4)},
                 2
         );
     }
 
     @Override
     public void produce(Resource resource) {
-        resource.addQuantity(10);
+        resource.addQuantity(4);
     }
 
     @Override
     public void consume(Resource resource) {
-        // Les fermes ne consomment rien
+        // Les carrières ne consomment rien
     }
 
     @Override
