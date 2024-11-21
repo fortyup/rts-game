@@ -23,19 +23,40 @@ public class GameController {
             int choice = view.getUserChoice();
 
             switch (choice) {
-                case 1 -> addFarm();
-                case 2 -> addHouse();
-                case 3 -> view.displayBuildings(manager.getBuildings());
-                case 4 -> simulateTurn();
-                case 5 -> {
+                case 1 -> addBuilding();          // Ajouter un bâtiment
+                case 2 -> view.displayGameState(manager.getBuildings(), manager.getResources());  // Afficher l'état du jeu
+                case 3 -> simulateTurn();         // Passer au prochain tour
+                case 4 -> {
                     running = false;
-                    view.displayGoodbyeMessage();
+                    view.displayGoodbyeMessage();  // Quitter le jeu
                 }
-                default -> view.displayInvalidChoiceMessage();
+                default -> view.displayInvalidChoiceMessage(); // Choix invalide
             }
         }
     }
 
+    // Méthode pour ajouter un bâtiment
+    private void addBuilding() {
+        System.out.println("\n--- Add Building ---");
+        System.out.println("1. Add Farm (produces food)");
+        System.out.println("2. Add House (consumes food)");
+        System.out.print("Choose a building to add: ");
+
+        int choice = view.getUserChoice();
+        switch (choice) {
+            case 1:
+                addFarm();
+                break;
+            case 2:
+                addHouse();
+                break;
+            default:
+                view.displayErrorMessage("Invalid choice. No building added.");
+                break;
+        }
+    }
+
+    // Méthode pour ajouter une ferme
     private void addFarm() {
         if (manager.getWood().getQuantity() >= 10) {
             manager.addBuilding(new Farm());
@@ -45,6 +66,7 @@ public class GameController {
         }
     }
 
+    // Méthode pour ajouter une maison
     private void addHouse() {
         if (manager.getWood().getQuantity() >= 10) {
             manager.addBuilding(new House());
@@ -54,8 +76,9 @@ public class GameController {
         }
     }
 
+    // Méthode pour simuler un tour
     private void simulateTurn() {
         manager.simulateTurn();
-        view.displayResources(manager.getResources());
+        view.displayResources(manager.getResources()); // Afficher les ressources après un tour
     }
 }

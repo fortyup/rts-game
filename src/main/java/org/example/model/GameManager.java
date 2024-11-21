@@ -12,8 +12,16 @@ public class GameManager {
     public GameManager() {
         buildings = new ArrayList<>();
         resources = new ArrayList<>();
-        resources.add(new Resource("Food", 50));
+        resources.add(new Resource("Food", 100));
         resources.add(new Resource("Wood", 50));
+        resources.add(new Resource("Stone", 20));
+        resources.add(new Resource("Coal", 0));
+        resources.add(new Resource("Iron", 0));
+        resources.add(new Resource("Steel", 0));
+        resources.add(new Resource("Cement", 0));
+        resources.add(new Resource("Lumber", 0));
+        resources.add(new Resource("Toos", 0));
+
     }
 
     public void addBuilding(Building building) {
