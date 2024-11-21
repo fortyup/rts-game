@@ -4,6 +4,7 @@ import org.example.model.Farm;
 import org.example.model.GameManager;
 import org.example.model.House;
 import org.example.view.ConsoleView;
+import org.example.model.Quarry;
 
 public class GameController {
     private final GameManager manager;
@@ -40,6 +41,7 @@ public class GameController {
         System.out.println("\n--- Add Building ---");
         System.out.println("1. Add Farm (produces food)");
         System.out.println("2. Add House (consumes food)");
+        System.out.println("3. Add Quarry (produces stone, iron, coal)");
         System.out.print("Choose a building to add: ");
 
         int choice = view.getUserChoice();
@@ -49,6 +51,9 @@ public class GameController {
                 break;
             case 2:
                 addHouse();
+                break;
+            case 3:
+                addQuarry();
                 break;
             default:
                 view.displayErrorMessage("Invalid choice. No building added.");
@@ -73,6 +78,16 @@ public class GameController {
             view.displaySuccessMessage("House added!");
         } else {
             view.displayErrorMessage("Not enough wood to add a House.");
+        }
+    }
+
+    // Méthode pour ajouter une carrière
+    private void addQuarry() {
+        if (manager.getWood().getQuantity() >= 10) {
+            manager.addBuilding(new Quarry());
+            view.displaySuccessMessage("Quarry added!");
+        } else {
+            view.displayErrorMessage("Not enough wood to add a Quarry.");
         }
     }
 

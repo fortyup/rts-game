@@ -33,4 +33,8 @@ public class Resource {
     public String toString() {
         return name + ": " + quantity;
     }
+
+    public void setQuantity(int i) {
+        this.quantity = i;
+    }
 }

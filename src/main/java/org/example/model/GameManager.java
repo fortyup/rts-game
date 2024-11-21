@@ -1,7 +1,5 @@
 package org.example.model;
 
-import org.example.model.Building;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +22,35 @@ public class GameManager {
 
     }
 
+    public boolean canBuild(Building building) {
+        for (Resource required : building.getMaterials()) {
+            Resource available = resources.stream()
+                    .filter(r -> r.getName().equals(required.getName()))
+                    .findFirst()
+                    .orElse(null);
+            if (available == null || available.getQuantity() < required.getQuantity()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void addBuilding(Building building) {
-        buildings.add(building);
+        if (canBuild(building)) {
+            for (Resource required : building.getMaterials()) {
+                Resource available = resources.stream()
+                        .filter(r -> r.getName().equals(required.getName()))
+                        .findFirst()
+                        .orElse(null);
+                if (available != null) {
+                    available.setQuantity(available.getQuantity() - required.getQuantity());
+                }
+            }
+            buildings.add(building);
+            System.out.println(building.getName() + " added.");
+        } else {
+            System.out.println("Not enough resources to build " + building.getName() + ".");
+        }
     }
 
     public List<Building> getBuildings() {
@@ -44,27 +69,6 @@ public class GameManager {
     }
 
     public void simulateTurn() {
-        int totalFoodConsumption = 0;
-
-        // Consommation
-        for (Building building : buildings) {
-            totalFoodConsumption += building.getFoodConsumption();
-        }
-
-        Resource food = resources.stream()
-                .filter(r -> r.getName().equals("Food"))
-                .findFirst()
-                .orElse(null);
-
-        if (food != null && !food.remove(totalFoodConsumption)) {
-            System.out.println("Not enough food! Some buildings might stop working.");
-        } else {
-            System.out.println("Food consumed: " + totalFoodConsumption);
-        }
-
-        // Production
-        for (Building building : buildings) {
-            building.produce(food);
-        }
+        System.out.println("\n--- Next Turn ---");
     }
 }

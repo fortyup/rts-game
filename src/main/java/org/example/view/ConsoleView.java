@@ -39,11 +39,12 @@ public class ConsoleView {
         return scanner.nextInt();
     }
 
-    // Ajout d'un bâtiment : Fermes ou Maisons
+    // Ajout d'un bâtiment : Fermes, Maisons ou Carrières
     public void addBuilding(List<Building> buildings) {
         System.out.println("\n--- Add Building ---");
         System.out.println("1. Add Farm");
         System.out.println("2. Add House");
+        System.out.println("3. Add Quarry");
         System.out.print("Choose a building to add: ");
 
         int choice = getUserChoice();
