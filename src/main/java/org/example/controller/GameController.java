@@ -63,31 +63,28 @@ public class GameController {
 
     // Méthode pour ajouter une ferme
     private void addFarm() {
-        if (manager.getWood().getQuantity() >= 10) {
+        if (manager.getWood().getQuantity() >= 5 & manager.getStone().getQuantity() >= 5) {
             manager.addBuilding(new Farm());
-            view.displaySuccessMessage("Farm added!");
         } else {
-            view.displayErrorMessage("Not enough wood to add a Farm.");
+            view.displayErrorMessage("Not enough resources to add a Farm. Required: 5 Wood, 5 Stone.");
         }
     }
 
     // Méthode pour ajouter une maison
     private void addHouse() {
-        if (manager.getWood().getQuantity() >= 10) {
+        if (manager.getWood().getQuantity() >= 2 & manager.getStone().getQuantity() >= 2) {
             manager.addBuilding(new House());
-            view.displaySuccessMessage("House added!");
         } else {
-            view.displayErrorMessage("Not enough wood to add a House.");
+            view.displayErrorMessage("Not enough resources to add a House. Required: 2 Wood, 2 Stone.");
         }
     }
 
     // Méthode pour ajouter une carrière
     private void addQuarry() {
-        if (manager.getWood().getQuantity() >= 10) {
+        if (manager.getWood().getQuantity() >= 50) {
             manager.addBuilding(new Quarry());
-            view.displaySuccessMessage("Quarry added!");
         } else {
-            view.displayErrorMessage("Not enough wood to add a Quarry.");
+            view.displayErrorMessage("Not enough resources to add a Quarry. Required: 50 Wood.");
         }
     }
 

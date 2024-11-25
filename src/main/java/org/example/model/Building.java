@@ -66,6 +66,16 @@ public abstract class Building {
         return timeToBuild;
     }
 
+    public void decrementTimeToBuild() {
+        if (timeToBuild > 0) {
+            timeToBuild--;
+        }
+    }
+
+    public boolean isConstructed() {
+        return timeToBuild == 0;
+    }
+
     public abstract void produce(Resource resource);
 
     public abstract void consume(Resource resource);

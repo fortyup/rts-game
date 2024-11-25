@@ -51,15 +51,12 @@ public class ConsoleView {
         switch (choice) {
             case 1:
                 buildings.add(new Farm());
-                System.out.println("Farm added!");
                 break;
             case 2:
                 buildings.add(new House());
-                System.out.println("House added!");
                 break;
             case 3:
                 buildings.add(new Quarry());
-                System.out.println("Quarry added!");
             default:
                 System.out.println("Invalid choice. No building added.");
                 break;
