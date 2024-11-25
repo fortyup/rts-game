@@ -2,7 +2,6 @@ package org.example.view;
 
 import org.example.model.*;
 
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,25 +16,24 @@ public class ConsoleView {
         System.out.println("Welcome to the RTS Game!");
     }
 
-    // Menu principal
     public void displayMenu() {
         System.out.println("\n--- Menu ---");
         System.out.println("1. Add Building");
         System.out.println("2. View Game State");
         System.out.println("3. Next Turn");
-        System.out.println("4. Quit");
+        System.out.println("4. View Map");
+        System.out.println("5. Quit");
         System.out.print("Enter your choice: ");
     }
 
     public int getUserChoice() {
         while (!scanner.hasNextInt()) {
             System.out.println("Invalid input. Please enter a number.");
-            scanner.next();  // Consomme la mauvaise entrée
+            scanner.next();
         }
         return scanner.nextInt();
     }
 
-    // Ajout d'un bâtiment : Fermes, Maisons ou Carrières
     public int getBuildingChoice() {
         System.out.println("\n--- Add Building ---");
         System.out.println("1. Add Farm");
@@ -49,36 +47,31 @@ public class ConsoleView {
         System.out.println("9. Add ApartmentBuilding");
         System.out.println("10. Cancel");
         System.out.print("Choose a building to add: ");
-
         return getUserChoice();
     }
 
-    // Affiche l'état actuel du jeu : bâtiments et ressources
     public void displayGameState(List<Building> buildings, List<Resource> resources) {
         System.out.println("\n--- Game State ---");
 
-        // Afficher les bâtiments
+        System.out.println("Buildings:");
         if (buildings.isEmpty()) {
             System.out.println("No buildings have been constructed yet.");
         } else {
-            System.out.println("Buildings:");
             for (Building building : buildings) {
                 System.out.println("- " + building.getName());
             }
         }
 
-        // Afficher les ressources
         System.out.println("\nResources:");
         if (resources.isEmpty()) {
             System.out.println("No resources available.");
         } else {
             for (Resource resource : resources) {
-                System.out.println(resource);  // Utilise la méthode toString de la classe Resource
+                System.out.println(resource);
             }
         }
     }
 
-    // Affiche les ressources
     public void displayResources(List<Resource> resources) {
         System.out.println("\nResources:");
         for (Resource resource : resources) {
@@ -86,37 +79,66 @@ public class ConsoleView {
         }
     }
 
-    // Affiche le message d'erreur
+    public void displayUnderConstruction(List<Building> underConstruction) {
+        System.out.println("\nBuildings under construction:");
+        if (underConstruction.isEmpty()) {
+            System.out.println("No buildings are currently under construction.");
+        } else {
+            for (Building building : underConstruction) {
+                System.out.println("- " + building.getName() + " (Turns left: " + building.getTimeToBuild() + ")");
+            }
+        }
+    }
+
+    public void displayCompletedBuildings(List<Building> completedBuildings) {
+        System.out.println("\nCompleted buildings:");
+        if (completedBuildings.isEmpty()) {
+            System.out.println("No buildings were completed this turn.");
+        } else {
+            for (Building building : completedBuildings) {
+                System.out.println("- " + building.getName());
+            }
+        }
+    }
+
+    public void displayBuildings(List<Building> buildings) {
+        System.out.println("\nBuildings:");
+        if (buildings.isEmpty()) {
+            System.out.println("No buildings have been constructed yet.");
+        } else {
+            for (Building building : buildings) {
+                System.out.println("- " + building.getName());
+            }
+        }
+    }
+
+    public int getBuildingPositionX() {
+        System.out.print("Enter the X position of the building: ");
+        return getUserChoice();
+    }
+
+    public int getBuildingPositionY() {
+        System.out.print("Enter the Y position of the building: ");
+        return getUserChoice();
+    }
+
+    public void displayMap(Map map) {
+        map.displayMap();
+    }
+
+    public void displaySuccessMessage(String message) {
+        System.out.println("SUCCESS: " + message);
+    }
+
     public void displayErrorMessage(String message) {
         System.out.println("ERROR: " + message);
     }
 
-    // Affiche un message d'option invalide
     public void displayInvalidChoiceMessage() {
         System.out.println("Invalid choice. Please try again.");
     }
 
-    // Affiche le message de fin du jeu
     public void displayGoodbyeMessage() {
         System.out.println("Thanks for playing! Goodbye!");
-    }
-
-    // Affiche un message concernant la production ou la consommation de ressources
-    public void displayResourceChange(String resourceName, int amount, boolean isProduced) {
-        if (isProduced) {
-            System.out.println(resourceName + " produced: " + amount + " units.");
-        } else {
-            System.out.println(resourceName + " consumed: " + amount + " units.");
-        }
-    }
-
-    // Affiche un message en cas de manque de ressources
-    public void displayInsufficientResources(String resourceName, int needed) {
-        System.out.println("Not enough " + resourceName + "! You need " + needed + " more units.");
-    }
-
-    // Affiche un message lors de l'ajout de ressources
-    public void displayResourceAdded(String resourceName, int amount) {
-        System.out.println(amount + " units of " + resourceName + " added.");
     }
 }

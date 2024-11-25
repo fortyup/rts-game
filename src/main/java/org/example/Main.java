@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         // Initialisation du modèle, de la vue et du contrôleur
         ConsoleView view = new ConsoleView();
-        GameManager manager = new GameManager(view);
+        GameManager manager = new GameManager(50, 50);
         GameController controller = new GameController(manager, view);
 
         // Lancer le jeu
