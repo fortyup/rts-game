@@ -50,10 +50,16 @@ public class GameController {
         };
 
         if (building != null) {
-            if (manager.tryAddBuilding(building)) {
-                view.displaySuccessMessage(building.getName() + " is under construction.");
+            int x = view.getBuildingPositionX();
+            int y = view.getBuildingPositionY();
+            if (manager.getMap().placeBuilding(building, x, y)) {
+                if (manager.tryAddBuilding(building)) {
+                    view.displaySuccessMessage(building.getName() + " is under construction at (" + x + ", " + y + ").");
+                } else {
+                    view.displayErrorMessage("Not enough resources to build " + building.getName() + ".");
+                }
             } else {
-                view.displayErrorMessage("Not enough resources to build " + building.getName() + ".");
+                view.displayErrorMessage("Invalid position or position already occupied.");
             }
         } else {
             view.displayErrorMessage("Invalid choice. No building added.");

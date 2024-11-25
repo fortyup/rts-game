@@ -53,15 +53,23 @@ public class Map {
 
     // Affiche une représentation de la carte dans la console
     public void displayMap() {
+        // Affiche la bordure supérieure avec les indices des colonnes
+        System.out.print("    "); // Espace pour les indices des lignes
+        for (int x = 0; x < width; x++) {
+            System.out.printf("%3d", x);  // Affichage des numéros de colonnes
+        }
+        System.out.println();
+
+        // Affiche la grille de la carte
         for (int y = 0; y < height; y++) {
+            // Affiche l'indice de la ligne à gauche
+            System.out.printf("%3d", y);
             for (int x = 0; x < width; x++) {
-                if (grid[x][y] == null) {
-                    System.out.print(".");
-                } else {
-                    System.out.print("B");
-                }
+                // Utilise un formatage pour afficher un point ou un B dans une cellule de taille fixe
+                String cell = (grid[x][y] == null) ? "." : "B";
+                System.out.printf("%3s", cell);  // Affichage avec largeur fixe de 3 caractères
             }
-            System.out.println();
+            System.out.println();  // Nouvelle ligne après chaque ligne de la carte
         }
     }
 
