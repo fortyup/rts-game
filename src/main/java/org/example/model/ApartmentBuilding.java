@@ -27,6 +27,11 @@ public class ApartmentBuilding extends Building {
     }
 
     @Override
+    public String getSymbol() {
+        return "A";
+    }
+
+    @Override
     public void status() {
         System.out.println("Apartment Building");
         System.out.println("Size: " + getSizeX() + "x" + getSizeY());

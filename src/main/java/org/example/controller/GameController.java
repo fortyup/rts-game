@@ -17,6 +17,7 @@ public class GameController {
 
         boolean running = true;
         while (running) {
+            view.displayMap(manager.getMap());
             view.displayMenu();
             int choice = view.getUserChoice();
 
@@ -24,8 +25,7 @@ public class GameController {
                 case 1 -> addBuilding();
                 case 2 -> view.displayGameState(manager.getBuildings(), manager.getResources());
                 case 3 -> simulateTurn();
-                case 4 -> view.displayMap(manager.getMap());
-                case 5 -> {
+                case 4 -> {
                     running = false;
                     view.displayGoodbyeMessage();
                 }

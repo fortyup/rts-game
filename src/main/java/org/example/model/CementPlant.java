@@ -27,6 +27,11 @@ public class CementPlant extends Building {
     }
 
     @Override
+    public String getSymbol() {
+        return "C";
+    }
+
+    @Override
     public void status() {
         System.out.println("Cement Plant");
         System.out.println("Size: " + getSizeX() + "x" + getSizeY());

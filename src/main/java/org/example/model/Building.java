@@ -72,6 +72,12 @@ public abstract class Building {
         }
     }
 
+    public abstract String getSymbol();
+
+    public boolean isUnderConstruction() {
+        return timeToBuild > 0;
+    }
+
     public boolean isConstructed() {
         return timeToBuild == 0;
     }

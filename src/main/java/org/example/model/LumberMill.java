@@ -27,6 +27,11 @@ public class LumberMill extends Building {
     }
 
     @Override
+    public String getSymbol() {
+        return "L";
+    }
+
+    @Override
     public void status() {
         System.out.println("Lumber Mill");
         System.out.println("Size: " + getSizeX() + "x" + getSizeY());

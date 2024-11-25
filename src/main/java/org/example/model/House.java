@@ -27,6 +27,11 @@ public class House extends Building {
     }
 
     @Override
+    public String getSymbol() {
+        return "H";
+    }
+
+    @Override
     public void status() {
         System.out.println("House");
         System.out.println("Size: " + getSizeX() + "x" + getSizeY());

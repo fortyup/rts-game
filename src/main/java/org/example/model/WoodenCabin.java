@@ -27,6 +27,11 @@ public class WoodenCabin extends Building {
     }
 
     @Override
+    public String getSymbol() {
+        return "W";
+    }
+
+    @Override
     public void status() {
         System.out.println("Wooden Cabin");
         System.out.println("Size: " + getSizeX() + "x" + getSizeY());

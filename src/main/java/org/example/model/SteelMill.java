@@ -31,6 +31,11 @@ public class SteelMill extends Building {
     }
 
     @Override
+    public String getSymbol() {
+        return "S";
+    }
+
+    @Override
     public void status() {
         System.out.println("Steel Mill");
         System.out.println("Size: " + getSizeX() + "x" + getSizeY());

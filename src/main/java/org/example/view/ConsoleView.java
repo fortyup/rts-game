@@ -21,8 +21,7 @@ public class ConsoleView {
         System.out.println("1. Add Building");
         System.out.println("2. View Game State");
         System.out.println("3. Next Turn");
-        System.out.println("4. View Map");
-        System.out.println("5. Quit");
+        System.out.println("4. Quit");
         System.out.print("Enter your choice: ");
     }
 

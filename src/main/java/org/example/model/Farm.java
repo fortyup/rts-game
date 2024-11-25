@@ -27,6 +27,11 @@ public class Farm extends Building {
     }
 
     @Override
+    public String getSymbol() {
+        return "F";
+    }
+
+    @Override
     public void status() {
         System.out.println("House");
         System.out.println("Size: " + getSizeX() + "x" + getSizeY());

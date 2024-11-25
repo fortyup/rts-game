@@ -66,7 +66,15 @@ public class Map {
             System.out.printf("%3d", y);
             for (int x = 0; x < width; x++) {
                 // Utilise un formatage pour afficher un point ou un B dans une cellule de taille fixe
-                String cell = (grid[x][y] == null) ? "." : "B";
+                Building building = grid[x][y];
+                String cell;
+                if (building == null) {
+                    cell = ".";
+                } else if (building.isUnderConstruction()) {
+                    cell = " \u001B[33m" + building.getSymbol() + "\u001B[0m"; // Jaune pour en construction
+                } else {
+                    cell = " \u001B[32m" + building.getSymbol() + "\u001B[0m"; // Vert pour construit
+                }
                 System.out.printf("%3s", cell);  // Affichage avec largeur fixe de 3 caractères
             }
             System.out.println();  // Nouvelle ligne après chaque ligne de la carte
