@@ -1,10 +1,7 @@
 package org.example.controller;
 
-import org.example.model.Farm;
-import org.example.model.GameManager;
-import org.example.model.House;
+import org.example.model.*;
 import org.example.view.ConsoleView;
-import org.example.model.Quarry;
 
 public class GameController {
     private final GameManager manager;
@@ -36,55 +33,65 @@ public class GameController {
         }
     }
 
-    // Méthode pour ajouter un bâtiment
-    private void addBuilding() {
-        System.out.println("\n--- Add Building ---");
-        System.out.println("1. Add Farm (produces food)");
-        System.out.println("2. Add House (consumes food)");
-        System.out.println("3. Add Quarry (produces stone, iron, coal)");
-        System.out.print("Choose a building to add: ");
+    // Méthode pour ajouter un bâtiment générique
+    private void addBuilding(Building building) {
+        boolean canBuild = true;
+        for (Resource required : building.getMaterials()) {
+            Resource available = manager.getResources().stream()
+                    .filter(r -> r.getName().equals(required.getName()))
+                    .findFirst()
+                    .orElse(null);
+            if (available == null || available.getQuantity() < required.getQuantity()) {
+                canBuild = false;
+                break;
+            }
+        }
 
-        int choice = view.getUserChoice();
+        if (canBuild) {
+            manager.addBuilding(building);
+        } else {
+            StringBuilder errorMessage = new StringBuilder("Not enough resources to add a " + building.getName() + ". Required: ");
+            for (Resource required : building.getMaterials()) {
+                errorMessage.append(required.getQuantity()).append(" ").append(required.getName()).append(", ");
+            }
+            view.displayErrorMessage(errorMessage.substring(0, errorMessage.length() - 2) + ".");
+        }
+    }
+
+    // Méthode pour ajouter un bâtiment en fonction du choix de l'utilisateur
+    private void addBuilding() {
+        int choice = view.getBuildingChoice();
         switch (choice) {
             case 1:
-                addFarm();
+                addBuilding(new Farm());
                 break;
             case 2:
-                addHouse();
+                addBuilding(new House());
                 break;
             case 3:
-                addQuarry();
+                addBuilding(new Quarry());
+                break;
+            case 4:
+                addBuilding(new WoodenCabin());
+                break;
+            case 5:
+                addBuilding(new ToolFactory());
+                break;
+            case 6:
+                addBuilding(new CementPlant());
+                break;
+            case 7:
+                addBuilding(new SteelMill());
+                break;
+            case 8:
+                addBuilding(new LumberMill());
+                break;
+            case 9:
+                addBuilding(new ApartmentBuilding());
                 break;
             default:
                 view.displayErrorMessage("Invalid choice. No building added.");
                 break;
-        }
-    }
-
-    // Méthode pour ajouter une ferme
-    private void addFarm() {
-        if (manager.getWood().getQuantity() >= 5 & manager.getStone().getQuantity() >= 5) {
-            manager.addBuilding(new Farm());
-        } else {
-            view.displayErrorMessage("Not enough resources to add a Farm. Required: 5 Wood, 5 Stone.");
-        }
-    }
-
-    // Méthode pour ajouter une maison
-    private void addHouse() {
-        if (manager.getWood().getQuantity() >= 2 & manager.getStone().getQuantity() >= 2) {
-            manager.addBuilding(new House());
-        } else {
-            view.displayErrorMessage("Not enough resources to add a House. Required: 2 Wood, 2 Stone.");
-        }
-    }
-
-    // Méthode pour ajouter une carrière
-    private void addQuarry() {
-        if (manager.getWood().getQuantity() >= 50) {
-            manager.addBuilding(new Quarry());
-        } else {
-            view.displayErrorMessage("Not enough resources to add a Quarry. Required: 50 Wood.");
         }
     }
 

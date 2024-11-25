@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.view.ConsoleView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +9,10 @@ public class GameManager {
     private List<Building> buildings;
     private List<Building> underConstruction;
     private List<Resource> resources;
+    private ConsoleView view;
 
-    public GameManager() {
+    public GameManager(ConsoleView view) {
+        this.view = view;
         buildings = new ArrayList<>();
         underConstruction = new ArrayList<>();
         resources = new ArrayList<>();
@@ -20,7 +24,7 @@ public class GameManager {
         resources.add(new Resource("Steel", 0));
         resources.add(new Resource("Cement", 0));
         resources.add(new Resource("Lumber", 0));
-        resources.add(new Resource("Tools", 0));
+        resources.add(new Resource("Tool", 0));
     }
 
     public boolean canBuild(Building building) {

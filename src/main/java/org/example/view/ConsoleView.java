@@ -1,10 +1,6 @@
 package org.example.view;
 
-import org.example.model.Building;
-import org.example.model.Farm;
-import org.example.model.House;
-import org.example.model.Quarry;
-import org.example.model.Resource;
+import org.example.model.*;
 
 
 import java.util.List;
@@ -40,27 +36,21 @@ public class ConsoleView {
     }
 
     // Ajout d'un bâtiment : Fermes, Maisons ou Carrières
-    public void addBuilding(List<Building> buildings) {
+    public int getBuildingChoice() {
         System.out.println("\n--- Add Building ---");
         System.out.println("1. Add Farm");
         System.out.println("2. Add House");
         System.out.println("3. Add Quarry");
+        System.out.println("4. Add WoodenCabin");
+        System.out.println("5. Add ToolFactory");
+        System.out.println("6. Add CementPlant");
+        System.out.println("7. Add SteelMill");
+        System.out.println("8. Add LumberMill");
+        System.out.println("9. Add ApartmentBuilding");
+        System.out.println("10. Cancel");
         System.out.print("Choose a building to add: ");
 
-        int choice = getUserChoice();
-        switch (choice) {
-            case 1:
-                buildings.add(new Farm());
-                break;
-            case 2:
-                buildings.add(new House());
-                break;
-            case 3:
-                buildings.add(new Quarry());
-            default:
-                System.out.println("Invalid choice. No building added.");
-                break;
-        }
+        return getUserChoice();
     }
 
     // Affiche l'état actuel du jeu : bâtiments et ressources
@@ -94,11 +84,6 @@ public class ConsoleView {
         for (Resource resource : resources) {
             System.out.println(resource);
         }
-    }
-
-    // Affiche le message de succès
-    public void displaySuccessMessage(String message) {
-        System.out.println("SUCCESS: " + message);
     }
 
     // Affiche le message d'erreur
