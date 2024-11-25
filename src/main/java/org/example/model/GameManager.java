@@ -70,5 +70,16 @@ public class GameManager {
 
     public void simulateTurn() {
         System.out.println("\n--- Next Turn ---");
+        for (Building building : buildings) {
+            for (Resource produced : building.getProduction()) {
+                Resource available = resources.stream()
+                        .filter(r -> r.getName().equals(produced.getName()))
+                        .findFirst()
+                        .orElse(null);
+                if (available != null) {
+                    building.produce(available);
+                }
+            }
+        }
     }
 }
