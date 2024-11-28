@@ -30,12 +30,4 @@ public class Quarry extends Building {
     public String getSymbol() {
         return "Q";
     }
-
-    @Override
-    public void status() {
-        System.out.println("House");
-        System.out.println("Size: " + getSizeX() + "x" + getSizeY());
-        System.out.println("Inhabitants: " + getInhabitants() + "/" + getMaxInhabitants());
-        System.out.println("Workers: " + getWorkers() + "/" + getMaxWorkers());
-    }
 }

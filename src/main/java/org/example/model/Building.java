@@ -1,10 +1,16 @@
 package org.example.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class Building {
     private String name;
     private int sizeX, sizeY;
     private int maxInhabitants;
+    private List<Resident> inhabitants;
     private int maxWorkers;
+    private List<Resident> workers;
     private Resource[] materials;
     private Resource[] consumption;
     private Resource[] production;
@@ -15,7 +21,9 @@ public abstract class Building {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.maxInhabitants = maxInhabitants;
+        this.inhabitants = new ArrayList<>();
         this.maxWorkers = maxWorkers;
+        this.workers = new ArrayList<>();
         this.materials = materials;
         this.consumption = consumption;
         this.production = production;
@@ -35,7 +43,7 @@ public abstract class Building {
     }
 
     public int getInhabitants() {
-        return 0;
+        return inhabitants.size();
     }
 
     public int getMaxInhabitants() {
@@ -43,7 +51,7 @@ public abstract class Building {
     }
 
     public int getWorkers() {
-        return 0;
+        return workers.size();
     }
 
     public int getMaxWorkers() {
@@ -86,23 +94,15 @@ public abstract class Building {
 
     public abstract void consume(Resource resource);
 
-    public void status() {
-        System.out.println("Building: " + name);
-        System.out.println("Size: " + sizeX + "x" + sizeY);
-        System.out.println("Max inhabitants: " + maxInhabitants);
-        System.out.println("Max workers: " + maxWorkers);
-        System.out.println("Materials: ");
-        for (Resource material : materials) {
-            System.out.println(material);
-        }
-        System.out.println("Consumption: ");
-        for (Resource resource : consumption) {
-            System.out.println(resource);
-        }
-        System.out.println("Production: ");
-        for (Resource resource : production) {
-            System.out.println(resource);
-        }
-        System.out.println("Time to build: " + timeToBuild);
+    @Override
+    public String toString() {
+        return "Building: " + name + "\n" +
+                "Size: " + sizeX + "x" + sizeY + "\n" +
+                "Inhabitants: " + inhabitants.size() + "/" + maxInhabitants + "\n" +
+                "Workers: " + workers.size() + "/" + maxWorkers + "\n" +
+                "Materials: " + Arrays.toString(materials) + "\n" +
+                "Consumption: " + Arrays.toString(consumption) + "\n" +
+                "Production: " + Arrays.toString(production) + "\n" +
+                "Time to build: " + timeToBuild;
     }
 }

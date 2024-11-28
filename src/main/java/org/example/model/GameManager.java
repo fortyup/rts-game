@@ -63,12 +63,17 @@ public class GameManager {
         return false;
     }
 
+    public void displayBuildingDetails(Building building) {
+        System.out.println(building.toString());
+    }
+
     public List<Building> completeBuildings() {
         List<Building> completedBuildings = new ArrayList<>();
         for (Building building : underConstruction) {
             building.decrementTimeToBuild();
             if (building.isConstructed()) {
                 completedBuildings.add(building);
+                displayBuildingDetails(building);
             }
         }
         underConstruction.removeAll(completedBuildings);

@@ -30,12 +30,4 @@ public class ApartmentBuilding extends Building {
     public String getSymbol() {
         return "A";
     }
-
-    @Override
-    public void status() {
-        System.out.println("Apartment Building");
-        System.out.println("Size: " + getSizeX() + "x" + getSizeY());
-        System.out.println("Inhabitants: " + getInhabitants() + "/" + getMaxInhabitants());
-        System.out.println("Workers: " + getWorkers() + "/" + getMaxWorkers());
-    }
 }
