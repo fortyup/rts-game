@@ -134,6 +134,24 @@ public class GameManager {
                         }
                     }
                 }
+                Resource foodResource = resources.stream()
+                        .filter(r -> r.getName().equals("Food"))
+                        .findFirst()
+                        .orElse(null);
+                if (foodResource != null) {
+                    foodResource.removeQuantity(1);
+                    System.out.println("Consumed 1 Food for worker " + worker.getName());
+                }
+            }
+            for (Resident inhabitant : building.getInhabitants()) {
+                Resource foodResource = resources.stream()
+                        .filter(r -> r.getName().equals("Food"))
+                        .findFirst()
+                        .orElse(null);
+                if (foodResource != null) {
+                    foodResource.removeQuantity(1);
+                    System.out.println("Consumed 1 Food for inhabitant " + inhabitant.getName());
+                }
             }
         }
     }
