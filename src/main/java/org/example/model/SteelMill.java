@@ -23,12 +23,7 @@ public class SteelMill extends Building {
 
     @Override
     public void consume(Resource resource) {
-        for (Resource consumedResource : getConsumption()) {
-            if (consumedResource.getName().equals(resource.getName())) {
-                resource.removeQuantity(consumedResource.getQuantity());
-                break;
-            }
-        }
+        super.consume(resource);
     }
 
     @Override

@@ -86,7 +86,7 @@ public class GameController {
                 case 3 -> view.displayGameState(manager.getBuildings(), manager.getResources());
                 case 4 -> view.displayResidents(manager.getResidents());
                 case 5 -> viewBuildingResidents();
-                case 610 -> simulateTurn();
+                case 6 -> simulateTurn();
                 case 7 -> view.displayMap(manager.getMap());
                 case 8 -> {
                     running = false;
@@ -134,10 +134,9 @@ public class GameController {
     }
 
     private void simulateTurn() {
-        view.displayUnderConstruction(manager.getBuildingsUnderConstruction());
-        view.displayCompletedBuildings(manager.completeBuildings());
-        view.displayBuildings(manager.getBuildings());
-        view.displayResources(manager.getResources());
+        manager.consumeResources();
         manager.produceResources();
+        manager.completeBuildings();
+        view.displayResources(manager.getResources());
     }
 }

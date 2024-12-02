@@ -89,10 +89,13 @@ public class GameManager {
     public List<Building> completeBuildings() {
         List<Building> completedBuildings = new ArrayList<>();
         for (Building building : underConstruction) {
-            building.decrementTimeToBuild();
-            if (building.isConstructed()) {
+            System.out.println("Checking building: " + building.getName() + " with " + building.getTimeToBuild() + " turns left.");
+            if (building.getTimeToBuild() == 1) {
                 completedBuildings.add(building);
-                displayBuildingDetails(building);
+                System.out.println("Building completed: " + building.getName());
+            } else {
+                building.decrementTimeToBuild();
+                System.out.println("Decrementing time to build for: " + building.getName() + ". Turns left: " + building.getTimeToBuild());
             }
         }
         underConstruction.removeAll(completedBuildings);
@@ -118,6 +121,21 @@ public class GameManager {
 
     public List<Building> getBuildingsUnderConstruction() {
         return underConstruction;
+    }
+
+    public void consumeResources() {
+        for (Building building : buildings) {
+            for (Resident worker : building.getWorkers()) {
+                for (Resource consumedResource : building.getConsumption()) {
+                    for (Resource globalResource : resources) {
+                        if (globalResource.getName().equals(consumedResource.getName())) {
+                            globalResource.removeQuantity(consumedResource.getQuantity());
+                            System.out.println("Consumed " + consumedResource.getQuantity() + " " + globalResource.getName());
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void produceResources() {

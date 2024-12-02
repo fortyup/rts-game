@@ -115,7 +115,15 @@ public abstract class Building {
         }
     }
 
-    public abstract void consume(Resource resource);
+    public void consume(Resource resource) {
+        for (Resource consumedResource : getConsumption()) {
+            System.out.println("ConsumedResource: " + consumedResource);
+            if (consumedResource.getName().equals(resource.getName())) {
+                resource.removeQuantity(consumedResource.getQuantity());
+                break;
+            }
+        }
+    }
 
     @Override
     public String toString() {

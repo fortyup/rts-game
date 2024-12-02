@@ -23,7 +23,6 @@ public class Farm extends Building {
     @Override
     public void consume(Resource resource) {
         // Farms do not consume anything
-        // Keep the method empty but aligned with the Building class method signature
     }
 
     @Override
