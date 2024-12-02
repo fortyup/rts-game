@@ -117,9 +117,13 @@ public class GameController {
         };
 
         if (building != null) {
+            int x = view.getBuildingPositionX();
+            int y = view.getBuildingPositionY();
+            if (x < 0 || y < 0 || x >= manager.getMap().getWidth() || y >= manager.getMap().getHeight()) {
+                view.displayErrorMessage("Invalid position. No building added.");
+                return;
+            }
             if (manager.tryAddBuilding(building)) {
-                int x = view.getBuildingPositionX();
-                int y = view.getBuildingPositionY();
                 if (manager.getMap().placeBuilding(building, x, y)) {
                     view.displaySuccessMessage(building.getName() + " is under construction at (" + x + ", " + y + ").");
                 } else {
