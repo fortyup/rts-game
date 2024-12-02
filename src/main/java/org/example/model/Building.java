@@ -1,22 +1,22 @@
 package org.example.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class Building {
-    private String name;
-    private int sizeX, sizeY;
-    private int maxInhabitants;
-    private List<Resident> inhabitants;
-    private int maxWorkers;
-    private List<Resident> workers;
-    private Resource[] materials;
-    private Resource[] consumption;
-    private Resource[] production;
+    private final String name;
+    private final int sizeX;
+    private final int sizeY;
+    private final int maxInhabitants;
+    private final List<Resident> inhabitants;
+    private final int maxWorkers;
+    private final List<Resident> workers;
+    private final List<Resource> materials;
+    private final List<Resource> consumption;
+    private final List<Resource> production;
     private int timeToBuild;
 
-    public Building(String name, int sizeX, int sizeY, int maxInhabitants, int maxWorkers, Resource[] materials, Resource[] consumption, Resource[] production, int timeToBuild) {
+    protected Building(String name, int sizeX, int sizeY, int maxInhabitants, int maxWorkers, List<Resource> materials, List<Resource> consumption, List<Resource> production, int timeToBuild) {
         this.name = name;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
@@ -58,15 +58,15 @@ public abstract class Building {
         return maxWorkers;
     }
 
-    public Resource[] getMaterials() {
+    public List<Resource> getMaterials() {
         return materials;
     }
 
-    public Resource[] getConsumption() {
+    public List<Resource> getConsumption() {
         return consumption;
     }
 
-    public Resource[] getProduction() {
+    public List<Resource> getProduction() {
         return production;
     }
 
@@ -131,9 +131,9 @@ public abstract class Building {
                 "Size: " + sizeX + "x" + sizeY + "\n" +
                 "Inhabitants: " + inhabitants.size() + "/" + maxInhabitants + "\n" +
                 "Workers: " + workers.size() + "/" + maxWorkers + "\n" +
-                "Materials: " + Arrays.toString(materials) + "\n" +
-                "Consumption: " + Arrays.toString(consumption) + "\n" +
-                "Production: " + Arrays.toString(production) + "\n" +
+                "Materials: " + materials + "\n" +
+                "Consumption: " + consumption + "\n" +
+                "Production: " + production + "\n" +
                 "Time to build: " + timeToBuild;
     }
 }

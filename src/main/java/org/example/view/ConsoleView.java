@@ -10,6 +10,7 @@ public class ConsoleView {
     private static final String SUCCESS_PREFIX = "SUCCESS: ";
     private static final String CANCEL_OPTION = "Cancel";
     private static final String INVALID_INPUT = "Invalid input. Please enter a number.";
+    private static final String MENU_FORMAT = "%d. %s%n";
 
     private final Scanner scanner;
 
@@ -29,7 +30,7 @@ public class ConsoleView {
 
         System.out.println("\n--- Residents ---");
         IntStream.range(0, residents.size())
-                .forEach(i -> System.out.printf("%d. %s%n", i + 1, residents.get(i)));
+                .forEach(i -> System.out.printf(MENU_FORMAT, i + 1, residents.get(i)));
     }
 
     public int selectResident() {
@@ -45,8 +46,8 @@ public class ConsoleView {
 
         System.out.println("\n--- Buildings ---");
         IntStream.range(0, buildings.size())
-                .forEach(i -> System.out.printf("%d. %s%n", i + 1, buildings.get(i).getName()));
-        System.out.printf("%d. %s%n", buildings.size() + 1, CANCEL_OPTION);
+                .forEach(i -> System.out.printf(MENU_FORMAT, i + 1, buildings.get(i).getName()));
+        System.out.printf(MENU_FORMAT, buildings.size() + 1, CANCEL_OPTION);
 
         System.out.print("Choose a building (or cancel): ");
         int choice = getUserChoice();
@@ -55,9 +56,9 @@ public class ConsoleView {
 
     public int selectAssignmentType() {
         System.out.println("\n--- Assignment Type ---");
-        System.out.println("1. Assign as Inhabitant");
-        System.out.println("2. Assign as Worker");
-        System.out.println("3. Cancel");
+        System.out.printf(MENU_FORMAT, 1, "Assign as Inhabitant");
+        System.out.printf(MENU_FORMAT, 2, "Assign as Worker");
+        System.out.printf(MENU_FORMAT, 3, CANCEL_OPTION);
 
         System.out.print("Choose assignment type: ");
         return getUserChoice();
@@ -71,7 +72,7 @@ public class ConsoleView {
                 "Next Turn", "View Map", "Quit"
         };
         IntStream.range(0, menuOptions.length)
-                .forEach(i -> System.out.printf("%d. %s%n", i + 1, menuOptions[i]));
+                .forEach(i -> System.out.printf(MENU_FORMAT, i + 1, menuOptions[i]));
         System.out.print("Enter your choice: ");
     }
 
@@ -92,13 +93,12 @@ public class ConsoleView {
         };
 
         IntStream.range(0, buildingTypes.length)
-                .forEach(i -> System.out.printf("%d. Add %s (Cost: %s)%n",
+                .forEach(i -> System.out.printf(MENU_FORMAT,
                         i + 1,
-                        buildingTypes[i].getClass().getSimpleName(),
-                        java.util.Arrays.toString(buildingTypes[i].getMaterials())
+                        buildingTypes[i].getClass().getSimpleName() + " - " + buildingTypes[i].getMaterials().toString()
                 ));
 
-        System.out.printf("%d. %s%n", buildingTypes.length + 1, CANCEL_OPTION);
+        System.out.printf(MENU_FORMAT, buildingTypes.length + 1, CANCEL_OPTION);
         System.out.print("Choose a building to add: ");
         return getUserChoice();
     }

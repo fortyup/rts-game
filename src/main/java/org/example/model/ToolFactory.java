@@ -1,6 +1,6 @@
 package org.example.model;
 
-// Sous-classe ToolFactory
+import java.util.List;// Sous-classe ToolFactory
 public class ToolFactory extends Building {
     public ToolFactory() {
         super(
@@ -9,9 +9,9 @@ public class ToolFactory extends Building {
                 3,
                 0,
                 12,
-                new Resource[]{new Resource("Wood", 50), new Resource("Stone", 50)},
-                new Resource[]{new Resource("Steel", 4), new Resource("Coal", 4)},
-                new Resource[]{new Resource("Tool", 4)},
+                List.of(new Resource("Wood", 50), new Resource("Stone", 50)),
+                List.of(new Resource("Steel", 4), new Resource("Coal", 4)),
+                List.of(new Resource("Tool", 4)),
                 8
         );
     }

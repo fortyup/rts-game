@@ -1,6 +1,6 @@
 package org.example.model;
 
-// Sous-classe Quarry
+import java.util.List;// Sous-classe Quarry
 public class Quarry extends Building {
     public Quarry() {
         super(
@@ -9,9 +9,9 @@ public class Quarry extends Building {
                 2,
                 2,
                 30,
-                new Resource[]{new Resource("Wood", 50)},
-                new Resource[]{},
-                new Resource[]{new Resource("Stone", 4), new Resource("Iron", 4), new Resource("Coal", 4)},
+                List.of(new Resource("Wood", 50)),
+                List.of(),
+                List.of(new Resource("Stone", 4), new Resource("Iron", 4), new Resource("Coal", 4)),
                 2
         );
     }

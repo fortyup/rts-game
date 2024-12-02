@@ -1,5 +1,7 @@
 package org.example.model;
 
+import java.util.List;
+
 public class ApartmentBuilding extends Building {
     public ApartmentBuilding() {
         super(
@@ -8,9 +10,9 @@ public class ApartmentBuilding extends Building {
                 2,
                 60,
                 0,
-                new Resource[]{new Resource("Wood", 50), new Resource("Stone", 50)},
-                new Resource[]{},
-                new Resource[]{},
+                List.of(new Resource("Wood", 50), new Resource("Stone", 50)),
+                List.of(),
+                List.of(),
                 6
         );
     }

@@ -1,5 +1,7 @@
 package org.example.model;
 
+import java.util.List;
+
 // Sous-classe SteelMill
 public class SteelMill extends Building {
     public SteelMill() {
@@ -9,9 +11,9 @@ public class SteelMill extends Building {
                 3,
                 0,
                 40,
-                new Resource[]{new Resource("Wood", 100), new Resource("Stone", 50)},
-                new Resource[]{new Resource("Iron", 4), new Resource("Coal", 2)},
-                new Resource[]{new Resource("Steel", 4)},
+                List.of(new Resource("Wood", 100), new Resource("Stone", 50)),
+                List.of(new Resource("Iron", 4), new Resource("Coal", 2)),
+                List.of(new Resource("Steel", 4)),
                 6
         );
     }
