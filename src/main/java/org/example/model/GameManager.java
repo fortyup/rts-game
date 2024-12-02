@@ -119,4 +119,22 @@ public class GameManager {
     public List<Building> getBuildingsUnderConstruction() {
         return underConstruction;
     }
+
+    public void produceResources() {
+        for (Building building : buildings) {
+            if (!building.getWorkers().isEmpty()) {
+                for (Resource resource : building.getProduction()) {
+                    int baseQuantity = resource.getQuantity();
+                    int productionAmount = baseQuantity * building.getWorkers().size();
+                    resource.setQuantity(productionAmount);
+                    for (Resource globalResource : resources) {
+                        if (globalResource.getName().equals(resource.getName())) {
+                            globalResource.addQuantity(productionAmount);
+                            System.out.println("Produced " + productionAmount + " " + globalResource.getName());
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

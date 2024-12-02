@@ -34,7 +34,7 @@ public class Resource {
         return name + ": " + quantity;
     }
 
-    public void setQuantity(int i) {
-        this.quantity = i;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

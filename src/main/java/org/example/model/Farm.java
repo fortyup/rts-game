@@ -17,14 +17,6 @@ public class Farm extends Building {
 
     @Override
     public void produce(Resource resource) {
-        System.out.println("Producing resource: " + resource.getName());
-        System.out.println("Number of workers: " + getWorkers().size());
-        for (Resource prodResource : getProduction()) {
-            System.out.println("Producing: " + prodResource.getName() + " with quantity: " + prodResource.getQuantity());
-            int productionAmount = prodResource.getQuantity() * getWorkers().size();
-            prodResource.setQuantity(productionAmount);
-            System.out.println("New quantity: " + prodResource.getQuantity());
-        }
         super.produce(resource);
     }
 

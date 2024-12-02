@@ -107,9 +107,11 @@ public abstract class Building {
     }
 
     public void produce(Resource resource) {
-        for (Resource prodResource : getProduction()) {
-            int productionAmount = prodResource.getQuantity() * getWorkers().size();
-            prodResource.setQuantity(productionAmount);
+        for (Resource prod : getProduction()) {
+            int baseQuantity = prod.getQuantity();
+            int productionAmount = baseQuantity * getWorkers().size();
+            prod.setQuantity(productionAmount);
+            resource.addQuantity(productionAmount);
         }
     }
 

@@ -2,6 +2,7 @@ package org.example.view;
 
 import org.example.model.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -56,12 +57,13 @@ public class ConsoleView {
     public void displayMenu() {
         System.out.println("\n--- Menu ---");
         System.out.println("1. Add Building");
-        System.out.println("2. View Game State");
-        System.out.println("3. Next Turn");
-        System.out.println("4. Assign Resident");
-        System.out.println("5. View Resident State");
-        System.out.println("6. View Building Residents");
-        System.out.println("7. Quit");
+        System.out.println("2. Assign Resident");
+        System.out.println("3. View Game State");
+        System.out.println("4. View Resident State");
+        System.out.println("5. View Building Residents");
+        System.out.println("6. Next Turn");
+        System.out.println("7. View Map");
+        System.out.println("8. Quit");
         System.out.print("Enter your choice: ");
     }
 
@@ -75,15 +77,15 @@ public class ConsoleView {
 
     public int getBuildingChoice() {
         System.out.println("\n--- Add Building ---");
-        System.out.println("1. Add Farm");
-        System.out.println("2. Add House");
-        System.out.println("3. Add Quarry");
-        System.out.println("4. Add WoodenCabin");
-        System.out.println("5. Add ToolFactory");
-        System.out.println("6. Add CementPlant");
-        System.out.println("7. Add SteelMill");
-        System.out.println("8. Add LumberMill");
-        System.out.println("9. Add ApartmentBuilding");
+        System.out.println("1. Add Farm (Cost: " + Arrays.toString(new Farm().getMaterials()) + ")");
+        System.out.println("2. Add House (Cost: " + Arrays.toString(new House().getMaterials()) + ")");
+        System.out.println("3. Add Quarry (Cost: " + Arrays.toString(new Quarry().getMaterials()) + ")");
+        System.out.println("4. Add WoodenCabin (Cost: " + Arrays.toString(new WoodenCabin().getMaterials()) + ")");
+        System.out.println("5. Add ToolFactory (Cost: " + Arrays.toString(new ToolFactory().getMaterials()) + ")");
+        System.out.println("6. Add CementPlant (Cost: " + Arrays.toString(new CementPlant().getMaterials()) + ")");
+        System.out.println("7. Add SteelMill (Cost: " + Arrays.toString(new SteelMill().getMaterials()) + ")");
+        System.out.println("8. Add LumberMill (Cost: " + Arrays.toString(new LumberMill().getMaterials()) + ")");
+        System.out.println("9. Add ApartmentBuilding (Cost: " + Arrays.toString(new ApartmentBuilding().getMaterials()) + ")");
         System.out.println("10. Cancel");
         System.out.print("Choose a building to add: ");
         return getUserChoice();
@@ -154,9 +156,11 @@ public class ConsoleView {
 
         System.out.println("Workers:");
         if (building.getWorkers().isEmpty()) {
+            System.out.println(building.getWorkers().size());
             System.out.println("No workers assigned.");
         } else {
             for (Resident resident : building.getWorkers()) {
+                System.out.println(building.getWorkers().size());
                 System.out.println("- " + resident);
             }
         }
