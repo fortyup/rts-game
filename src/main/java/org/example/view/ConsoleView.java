@@ -16,12 +16,52 @@ public class ConsoleView {
         System.out.println("Welcome to the RTS Game!");
     }
 
+    public void displayResidents(List<Resident> residents) {
+        System.out.println("\n--- Residents ---");
+        for (int i = 0; i < residents.size(); i++) {
+            System.out.println((i + 1) + ". " + residents.get(i));
+        }
+    }
+
+    public int selectResident() {
+        System.out.print("Choose a resident (or cancel): ");
+        return getUserChoice() - 1; // Adjust for 0-based indexing
+    }
+
+    public int selectBuilding(List<Building> buildings) {
+        System.out.println("\n--- Buildings ---");
+        for (int i = 0; i < buildings.size(); i++) {
+            System.out.println((i + 1) + ". " + buildings.get(i).getName());
+        }
+        System.out.println((buildings.size() + 1) + ". Cancel");
+
+        System.out.print("Choose a building (or cancel): ");
+        int choice = getUserChoice();
+
+        if (choice < 1 || choice > buildings.size() + 1) return -1;
+
+        return choice - 1; // Adjust for 0-based indexing
+    }
+
+    public int selectAssignmentType() {
+        System.out.println("\n--- Assignment Type ---");
+        System.out.println("1. Assign as Inhabitant");
+        System.out.println("2. Assign as Worker");
+        System.out.println("3. Cancel");
+
+        System.out.print("Choose assignment type: ");
+        return getUserChoice();
+    }
+
     public void displayMenu() {
         System.out.println("\n--- Menu ---");
         System.out.println("1. Add Building");
         System.out.println("2. View Game State");
         System.out.println("3. Next Turn");
-        System.out.println("4. Quit");
+        System.out.println("4. Assign Resident");
+        System.out.println("5. View Resident State");
+        System.out.println("6. View Building Residents");
+        System.out.println("7. Quit");
         System.out.print("Enter your choice: ");
     }
 
@@ -96,6 +136,28 @@ public class ConsoleView {
         } else {
             for (Building building : completedBuildings) {
                 System.out.println("- " + building.getName());
+            }
+        }
+    }
+
+    public void displayBuildingResidents(Building building) {
+        System.out.println("Building: " + building.getName());
+
+        System.out.println("Inhabitants:");
+        if (building.getInhabitants().isEmpty()) {
+            System.out.println("No inhabitants assigned.");
+        } else {
+            for (Resident resident : building.getInhabitants()) {
+                System.out.println("- " + resident);
+            }
+        }
+
+        System.out.println("Workers:");
+        if (building.getWorkers().isEmpty()) {
+            System.out.println("No workers assigned.");
+        } else {
+            for (Resident resident : building.getWorkers()) {
+                System.out.println("- " + resident);
             }
         }
     }

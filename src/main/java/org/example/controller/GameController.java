@@ -3,6 +3,8 @@ package org.example.controller;
 import org.example.model.*;
 import org.example.view.ConsoleView;
 
+import java.util.List;
+
 public class GameController {
     private final GameManager manager;
     private final ConsoleView view;
@@ -10,6 +12,64 @@ public class GameController {
     public GameController(GameManager manager, ConsoleView view) {
         this.manager = manager;
         this.view = view;
+    }
+
+    public void assignToBuilding() {
+        // Display available buildings
+        view.displayBuildings(manager.getBuildings());
+
+        // Get building selection
+        int buildingChoice = view.selectBuilding(manager.getBuildings());
+        if (buildingChoice == manager.getBuildings().size()) return; // User cancelled
+
+        // Display and get resident selection
+        view.displayResidents(manager.getResidents());
+        int residentChoice = view.selectResident();
+        if (residentChoice == manager.getResidents().size()) return; // User cancelled
+
+        // Get assignment type
+        int assignmentType = view.selectAssignmentType();
+
+        Resident selectedResident = manager.getResidents().get(residentChoice);
+        Building selectedBuilding = manager.getBuildings().get(buildingChoice);
+
+        try {
+            switch (assignmentType) {
+                case 1 -> { // Assign as Inhabitant
+                    manager.assignInhabitantToBuilding(selectedBuilding, selectedResident);
+                    view.displaySuccessMessage(selectedResident.getName() + " assigned as inhabitant to " + selectedBuilding.getName());
+                }
+                case 2 -> { // Assign as Worker
+                    manager.assignWorkerToBuilding(selectedBuilding, selectedResident);
+                    selectedResident.assignAsWorker();
+                    view.displaySuccessMessage(selectedResident.getName() + " assigned as worker to " + selectedBuilding.getName());
+                }
+                default -> view.displayErrorMessage("Invalid assignment type.");
+            }
+        } catch (IllegalStateException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
+    }
+
+    public void viewBuildingResidents() {
+        List<Building> buildings = manager.getBuildings();
+        if (buildings.isEmpty()) {
+            view.displayErrorMessage("No buildings available.");
+            return;
+        }
+
+        view.displayBuildings(buildings);
+
+        int buildingChoice = view.selectBuilding(buildings);
+        if (buildingChoice == -1) return; // User cancelled
+
+        if (buildingChoice < 0 || buildingChoice >= buildings.size()) {
+            view.displayErrorMessage("Invalid building selection.");
+            return;
+        }
+
+        Building selectedBuilding = buildings.get(buildingChoice);
+        view.displayBuildingResidents(selectedBuilding);
     }
 
     public void runGame() {
@@ -25,7 +85,10 @@ public class GameController {
                 case 1 -> addBuilding();
                 case 2 -> view.displayGameState(manager.getBuildings(), manager.getResources());
                 case 3 -> simulateTurn();
-                case 4 -> {
+                case 4 -> assignToBuilding(); // New option
+                case 5 -> view.displayResidents(manager.getResidents());
+                case 6 -> viewBuildingResidents();
+                case 7 -> {
                     running = false;
                     view.displayGoodbyeMessage();
                 }
@@ -71,5 +134,6 @@ public class GameController {
         view.displayCompletedBuildings(manager.completeBuildings());
         view.displayBuildings(manager.getBuildings());
         view.displayResources(manager.getResources());
+
     }
 }

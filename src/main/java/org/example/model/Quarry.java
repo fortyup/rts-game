@@ -18,7 +18,7 @@ public class Quarry extends Building {
 
     @Override
     public void produce(Resource resource) {
-        resource.addQuantity(4);
+        super.produce(resource);
     }
 
     @Override

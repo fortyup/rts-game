@@ -7,13 +7,17 @@ public class GameManager {
     private List<Building> buildings;
     private List<Building> underConstruction;
     private List<Resource> resources;
+    private List<Resident> residents;
     private Map map;
 
     public GameManager(int mapWidth, int mapHeight) {
         this.buildings = new ArrayList<>();
         this.underConstruction = new ArrayList<>();
         this.resources = new ArrayList<>();
+        this.residents = new ArrayList<>();
         this.map = new Map(mapWidth, mapHeight);
+
+        // Initialize resources
         this.resources.add(new Resource("Food", 100));
         this.resources.add(new Resource("Wood", 50));
         this.resources.add(new Resource("Stone", 20));
@@ -23,6 +27,21 @@ public class GameManager {
         this.resources.add(new Resource("Cement", 0));
         this.resources.add(new Resource("Lumber", 0));
         this.resources.add(new Resource("Tool", 0));
+
+        // Initialize some default residents
+        this.residents.add(new Resident("Alice"));
+        this.residents.add(new Resident("Bob"));
+        this.residents.add(new Resident("Charlie"));
+        this.residents.add(new Resident("David"));
+        this.residents.add(new Resident("Eve"));
+    }
+
+    public List<Resident> getResidents() {
+        return residents;
+    }
+
+    public void addResident(Resident resident) {
+        residents.add(resident);
     }
 
     public Map getMap() {
@@ -79,6 +98,14 @@ public class GameManager {
         underConstruction.removeAll(completedBuildings);
         buildings.addAll(completedBuildings);
         return completedBuildings;
+    }
+
+    public void assignWorkerToBuilding(Building building, Resident resident) {
+        building.addWorker(resident);
+    }
+
+    public void assignInhabitantToBuilding(Building building, Resident resident) {
+        building.addInhabitant(resident);
     }
 
     public List<Building> getBuildings() {

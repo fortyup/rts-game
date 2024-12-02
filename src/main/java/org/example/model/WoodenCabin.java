@@ -1,6 +1,5 @@
 package org.example.model;
 
-// Sous-classe WoodenCabin
 public class WoodenCabin extends Building {
     public WoodenCabin() {
         super(
@@ -18,12 +17,13 @@ public class WoodenCabin extends Building {
 
     @Override
     public void produce(Resource resource) {
-        resource.addQuantity(2);
+        // Use the parent class method
+        super.produce(resource);
     }
 
     @Override
     public void consume(Resource resource) {
-        // Les cabanes en bois ne consomment rien
+        // Wooden cabins do not consume anything
     }
 
     @Override

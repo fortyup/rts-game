@@ -18,15 +18,16 @@ public class SteelMill extends Building {
 
     @Override
     public void produce(Resource resource) {
-        resource.addQuantity(4);
+        super.produce(resource);
     }
 
     @Override
     public void consume(Resource resource) {
-        if (resource.getName().equals("Iron")) {
-            resource.removeQuantity(4);
-        } else if (resource.getName().equals("Coal")) {
-            resource.removeQuantity(2);
+        for (Resource consumedResource : getConsumption()) {
+            if (consumedResource.getName().equals(resource.getName())) {
+                resource.removeQuantity(consumedResource.getQuantity());
+                break;
+            }
         }
     }
 

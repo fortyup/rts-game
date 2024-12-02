@@ -1,6 +1,5 @@
 package org.example.model;
 
-// Sous-classe House
 public class House extends Building {
     public House() {
         super(
@@ -18,12 +17,14 @@ public class House extends Building {
 
     @Override
     public void produce(Resource resource) {
-        // Les maisons ne produisent rien
+        // Houses do not produce anything
+        // Keep the method empty but aligned with the Building class method signature
     }
 
     @Override
     public void consume(Resource resource) {
-        // Les maisons ne consomment rien
+        // Houses do not consume anything
+        // Keep the method empty but aligned with the Building class method signature
     }
 
     @Override

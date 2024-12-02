@@ -18,12 +18,17 @@ public class ToolFactory extends Building {
 
     @Override
     public void produce(Resource resource) {
-        resource.addQuantity(4);
+        super.produce(resource);
     }
 
     @Override
     public void consume(Resource resource) {
-        resource.removeQuantity(4);
+        for (Resource consumedResource : getConsumption()) {
+            if (consumedResource.getName().equals(resource.getName())) {
+                resource.removeQuantity(consumedResource.getQuantity());
+                break;
+            }
+        }
     }
 
     @Override

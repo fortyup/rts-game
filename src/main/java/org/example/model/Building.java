@@ -42,16 +42,16 @@ public abstract class Building {
         return sizeY;
     }
 
-    public int getInhabitants() {
-        return inhabitants.size();
+    public List<Resident> getInhabitants() {
+        return inhabitants;
     }
 
     public int getMaxInhabitants() {
         return maxInhabitants;
     }
 
-    public int getWorkers() {
-        return workers.size();
+    public List<Resident> getWorkers() {
+        return workers;
     }
 
     public int getMaxWorkers() {
@@ -90,7 +90,28 @@ public abstract class Building {
         return timeToBuild == 0;
     }
 
-    public abstract void produce(Resource resource);
+    public void addInhabitant(Resident resident) {
+        if (inhabitants.size() < maxInhabitants) {
+            inhabitants.add(resident);
+        } else {
+            throw new IllegalStateException("Maximum number of inhabitants reached.");
+        }
+    }
+
+    public void addWorker(Resident resident) {
+        if (workers.size() < maxWorkers) {
+            workers.add(resident);
+        } else {
+            throw new IllegalStateException("Maximum number of workers reached.");
+        }
+    }
+
+    public void produce(Resource resource) {
+        for (Resource prodResource : getProduction()) {
+            int productionAmount = prodResource.getQuantity() * getWorkers().size();
+            prodResource.setQuantity(productionAmount);
+        }
+    }
 
     public abstract void consume(Resource resource);
 
