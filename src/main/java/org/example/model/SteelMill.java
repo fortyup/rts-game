@@ -28,6 +28,6 @@ public class SteelMill extends Building {
 
     @Override
     public String getSymbol() {
-        return "S";
+        return " S";
     }
 }

@@ -27,6 +27,6 @@ public class CementPlant extends Building {
 
     @Override
     public String getSymbol() {
-        return "C";
+        return " C";
     }
 }

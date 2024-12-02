@@ -27,6 +27,6 @@ public class Farm extends Building {
 
     @Override
     public String getSymbol() {
-        return "F";
+        return " F";
     }
 }

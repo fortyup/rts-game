@@ -28,6 +28,6 @@ public class LumberMill extends Building {
 
     @Override
     public String getSymbol() {
-        return "L";
+        return " L";
     }
 }

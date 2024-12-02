@@ -28,6 +28,6 @@ public class WoodenCabin extends Building {
 
     @Override
     public String getSymbol() {
-        return "W";
+        return " W";
     }
 }

@@ -29,6 +29,6 @@ public class ApartmentBuilding extends Building {
 
     @Override
     public String getSymbol() {
-        return "A";
+        return " A";
     }
 }

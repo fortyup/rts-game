@@ -28,6 +28,6 @@ public class ToolFactory extends Building {
 
     @Override
     public String getSymbol() {
-        return "T";
+        return " T";
     }
 }

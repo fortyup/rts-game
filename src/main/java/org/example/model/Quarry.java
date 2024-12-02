@@ -28,6 +28,6 @@ public class Quarry extends Building {
 
     @Override
     public String getSymbol() {
-        return "Q";
+        return " Q";
     }
 }

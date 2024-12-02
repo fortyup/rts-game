@@ -90,7 +90,7 @@ public class GameManager {
         List<Building> completedBuildings = new ArrayList<>();
         for (Building building : underConstruction) {
             System.out.println("Checking building: " + building.getName() + " with " + building.getTimeToBuild() + " turns left.");
-            if (building.getTimeToBuild() == 1) {
+            if (building.isConstructed()) {
                 completedBuildings.add(building);
                 System.out.println("Building completed: " + building.getName());
             } else {
