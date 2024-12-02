@@ -1,12 +1,16 @@
 package org.example.view;
 
 import org.example.model.*;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 public class ConsoleView {
+    private static final String ERROR_PREFIX = "ERROR: ";
+    private static final String SUCCESS_PREFIX = "SUCCESS: ";
+    private static final String CANCEL_OPTION = "Cancel";
+    private static final String INVALID_INPUT = "Invalid input. Please enter a number.";
+
     private final Scanner scanner;
 
     public ConsoleView() {
@@ -18,30 +22,35 @@ public class ConsoleView {
     }
 
     public void displayResidents(List<Resident> residents) {
-        System.out.println("\n--- Residents ---");
-        for (int i = 0; i < residents.size(); i++) {
-            System.out.println((i + 1) + ". " + residents.get(i));
+        if (residents == null || residents.isEmpty()) {
+            System.out.println("No residents available.");
+            return;
         }
+
+        System.out.println("\n--- Residents ---");
+        IntStream.range(0, residents.size())
+                .forEach(i -> System.out.printf("%d. %s%n", i + 1, residents.get(i)));
     }
 
     public int selectResident() {
         System.out.print("Choose a resident (or cancel): ");
-        return getUserChoice() - 1; // Adjust for 0-based indexing
+        return getUserChoice() - 1;
     }
 
     public int selectBuilding(List<Building> buildings) {
-        System.out.println("\n--- Buildings ---");
-        for (int i = 0; i < buildings.size(); i++) {
-            System.out.println((i + 1) + ". " + buildings.get(i).getName());
+        if (buildings == null || buildings.isEmpty()) {
+            System.out.println("No buildings available.");
+            return -1;
         }
-        System.out.println((buildings.size() + 1) + ". Cancel");
+
+        System.out.println("\n--- Buildings ---");
+        IntStream.range(0, buildings.size())
+                .forEach(i -> System.out.printf("%d. %s%n", i + 1, buildings.get(i).getName()));
+        System.out.printf("%d. %s%n", buildings.size() + 1, CANCEL_OPTION);
 
         System.out.print("Choose a building (or cancel): ");
         int choice = getUserChoice();
-
-        if (choice < 1 || choice > buildings.size() + 1) return -1;
-
-        return choice - 1; // Adjust for 0-based indexing
+        return (choice < 1 || choice > buildings.size() + 1) ? -1 : choice - 1;
     }
 
     public int selectAssignmentType() {
@@ -56,20 +65,19 @@ public class ConsoleView {
 
     public void displayMenu() {
         System.out.println("\n--- Menu ---");
-        System.out.println("1. Add Building");
-        System.out.println("2. Assign Resident");
-        System.out.println("3. View Game State");
-        System.out.println("4. View Resident State");
-        System.out.println("5. View Building Residents");
-        System.out.println("6. Next Turn");
-        System.out.println("7. View Map");
-        System.out.println("8. Quit");
+        String[] menuOptions = {
+                "Add Building", "Assign Resident", "View Game State",
+                "View Resident State", "View Building Residents",
+                "Next Turn", "View Map", "Quit"
+        };
+        IntStream.range(0, menuOptions.length)
+                .forEach(i -> System.out.printf("%d. %s%n", i + 1, menuOptions[i]));
         System.out.print("Enter your choice: ");
     }
 
     public int getUserChoice() {
         while (!scanner.hasNextInt()) {
-            System.out.println("Invalid input. Please enter a number.");
+            System.out.println(INVALID_INPUT);
             scanner.next();
         }
         return scanner.nextInt();
@@ -77,16 +85,20 @@ public class ConsoleView {
 
     public int getBuildingChoice() {
         System.out.println("\n--- Add Building ---");
-        System.out.println("1. Add Farm (Cost: " + Arrays.toString(new Farm().getMaterials()) + ")");
-        System.out.println("2. Add House (Cost: " + Arrays.toString(new House().getMaterials()) + ")");
-        System.out.println("3. Add Quarry (Cost: " + Arrays.toString(new Quarry().getMaterials()) + ")");
-        System.out.println("4. Add WoodenCabin (Cost: " + Arrays.toString(new WoodenCabin().getMaterials()) + ")");
-        System.out.println("5. Add ToolFactory (Cost: " + Arrays.toString(new ToolFactory().getMaterials()) + ")");
-        System.out.println("6. Add CementPlant (Cost: " + Arrays.toString(new CementPlant().getMaterials()) + ")");
-        System.out.println("7. Add SteelMill (Cost: " + Arrays.toString(new SteelMill().getMaterials()) + ")");
-        System.out.println("8. Add LumberMill (Cost: " + Arrays.toString(new LumberMill().getMaterials()) + ")");
-        System.out.println("9. Add ApartmentBuilding (Cost: " + Arrays.toString(new ApartmentBuilding().getMaterials()) + ")");
-        System.out.println("10. Cancel");
+        Building[] buildingTypes = {
+                new Farm(), new House(), new Quarry(), new WoodenCabin(),
+                new ToolFactory(), new CementPlant(), new SteelMill(),
+                new LumberMill(), new ApartmentBuilding()
+        };
+
+        IntStream.range(0, buildingTypes.length)
+                .forEach(i -> System.out.printf("%d. Add %s (Cost: %s)%n",
+                        i + 1,
+                        buildingTypes[i].getClass().getSimpleName(),
+                        java.util.Arrays.toString(buildingTypes[i].getMaterials())
+                ));
+
+        System.out.printf("%d. %s%n", buildingTypes.length + 1, CANCEL_OPTION);
         System.out.print("Choose a building to add: ");
         return getUserChoice();
     }
@@ -95,86 +107,71 @@ public class ConsoleView {
         System.out.println("\n--- Game State ---");
 
         System.out.println("Buildings:");
-        if (buildings.isEmpty()) {
-            System.out.println("No buildings have been constructed yet.");
-        } else {
-            for (Building building : buildings) {
-                System.out.println("- " + building.getName());
-            }
-        }
+        displayListOrDefault(buildings, "No buildings have been constructed yet.",
+                building -> System.out.println("- " + building.getName()));
 
         System.out.println("\nResources:");
-        if (resources.isEmpty()) {
-            System.out.println("No resources available.");
+        displayListOrDefault(resources, "No resources available.",
+                System.out::println);
+    }
+
+    private <T> void displayListOrDefault(List<T> list, String defaultMessage,
+                                          java.util.function.Consumer<T> displayAction) {
+        if (list == null || list.isEmpty()) {
+            System.out.println(defaultMessage);
         } else {
-            for (Resource resource : resources) {
-                System.out.println(resource);
-            }
+            list.forEach(displayAction);
         }
     }
 
     public void displayResources(List<Resource> resources) {
         System.out.println("\nResources:");
-        for (Resource resource : resources) {
-            System.out.println(resource);
-        }
+        resources.forEach(System.out::println);
     }
 
     public void displayUnderConstruction(List<Building> underConstruction) {
         System.out.println("\nBuildings under construction:");
-        if (underConstruction.isEmpty()) {
-            System.out.println("No buildings are currently under construction.");
-        } else {
-            for (Building building : underConstruction) {
-                System.out.println("- " + building.getName() + " (Turns left: " + building.getTimeToBuild() + ")");
-            }
-        }
+        displayListOrDefault(underConstruction,
+                "No buildings are currently under construction.",
+                building -> System.out.printf("- %s (Turns left: %d)%n",
+                        building.getName(), building.getTimeToBuild())
+        );
     }
 
     public void displayCompletedBuildings(List<Building> completedBuildings) {
         System.out.println("\nCompleted buildings:");
-        if (completedBuildings.isEmpty()) {
-            System.out.println("No buildings were completed this turn.");
-        } else {
-            for (Building building : completedBuildings) {
-                System.out.println("- " + building.getName());
-            }
-        }
+        displayListOrDefault(completedBuildings,
+                "No buildings were completed this turn.",
+                building -> System.out.println("- " + building.getName())
+        );
     }
 
     public void displayBuildingResidents(Building building) {
         System.out.println("Building: " + building.getName());
 
         System.out.println("Inhabitants:");
-        if (building.getInhabitants().isEmpty()) {
-            System.out.println("No inhabitants assigned.");
-        } else {
-            for (Resident resident : building.getInhabitants()) {
-                System.out.println("- " + resident);
-            }
-        }
+        displayListOrDefault(building.getInhabitants(),
+                "No inhabitants assigned.",
+                resident -> System.out.println("- " + resident)
+        );
 
         System.out.println("Workers:");
-        if (building.getWorkers().isEmpty()) {
-            System.out.println(building.getWorkers().size());
-            System.out.println("No workers assigned.");
-        } else {
-            for (Resident resident : building.getWorkers()) {
-                System.out.println(building.getWorkers().size());
-                System.out.println("- " + resident);
-            }
-        }
+        displayListOrDefault(building.getWorkers(),
+                "No workers assigned.",
+                resident -> System.out.println("- " + resident)
+        );
     }
 
     public void displayBuildings(List<Building> buildings) {
         System.out.println("\nBuildings:");
-        if (buildings.isEmpty()) {
-            System.out.println("No buildings have been constructed yet.");
-        } else {
-            for (Building building : buildings) {
-                System.out.println("- " + building.getName());
-            }
-        }
+        displayListOrDefault(buildings,
+                "No buildings have been constructed yet.",
+                building -> System.out.println("- " + building.getName())
+        );
+    }
+
+    public void displayBuildingDetails(Building building) {
+        System.out.println(building.toString());
     }
 
     public int getBuildingPositionX() {
@@ -192,11 +189,11 @@ public class ConsoleView {
     }
 
     public void displaySuccessMessage(String message) {
-        System.out.println("SUCCESS: " + message);
+        System.out.println(SUCCESS_PREFIX + message);
     }
 
     public void displayErrorMessage(String message) {
-        System.out.println("ERROR: " + message);
+        System.out.println(ERROR_PREFIX + message);
     }
 
     public void displayInvalidChoiceMessage() {

@@ -82,10 +82,6 @@ public class GameManager {
         return false;
     }
 
-    public void displayBuildingDetails(Building building) {
-        System.out.println(building.toString());
-    }
-
     public List<Building> completeBuildings() {
         List<Building> completedBuildings = new ArrayList<>();
         for (Building building : underConstruction) {
@@ -172,5 +168,32 @@ public class GameManager {
                 }
             }
         }
+    }
+
+    public boolean addBuilding(int choice, int x, int y) {
+        Building building = switch (choice) {
+            case 1 -> new Farm();
+            case 2 -> new House();
+            case 3 -> new Quarry();
+            case 4 -> new WoodenCabin();
+            case 5 -> new ToolFactory();
+            case 6 -> new CementPlant();
+            case 7 -> new SteelMill();
+            case 8 -> new LumberMill();
+            case 9 -> new ApartmentBuilding();
+            default -> null;
+        };
+
+        if (building != null) {
+            if (x < 0 || y < 0 || x >= map.getWidth() || y >= map.getHeight()) {
+                return false; // Invalid position
+            }
+            if (tryAddBuilding(building)) {
+                if (map.placeBuilding(building, x, y)) {
+                    return true; // Building added successfully
+                }
+            }
+        }
+        return false; // Invalid choice or not enough resources
     }
 }

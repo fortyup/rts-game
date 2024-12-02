@@ -4,6 +4,7 @@ import org.example.model.*;
 import org.example.view.ConsoleView;
 
 import java.util.List;
+import java.util.Optional;
 
 public class GameController {
     private final GameManager manager;
@@ -14,36 +15,100 @@ public class GameController {
         this.view = view;
     }
 
-    public void assignToBuilding() {
-        // Display available buildings
-        view.displayBuildings(manager.getBuildings());
+    public void runGame() {
+        view.displayWelcomeMessage();
+        processGameLoop();
+    }
 
-        // Get building selection
-        int buildingChoice = view.selectBuilding(manager.getBuildings());
-        if (buildingChoice == manager.getBuildings().size()) return; // User cancelled
+    private void processGameLoop() {
+        boolean running = true;
+        while (running) {
+            view.displayMenu();
+            running = processUserChoice(view.getUserChoice());
+        }
+        view.displayGoodbyeMessage();
+    }
 
-        // Display and get resident selection
+    private boolean processUserChoice(int choice) {
+        switch (choice) {
+            case 1 -> handleAddBuilding();
+            case 2 -> handleAssignToBuilding();
+            case 3 -> displayGameState();
+            case 4 -> displayResidents();
+            case 5 -> displayBuildingResidents();
+            case 6 -> simulateTurn();
+            case 7 -> displayMap();
+            case 8 -> {
+                return false;
+            }
+            default -> view.displayInvalidChoiceMessage();
+        }
+        return true;
+    }
+
+    private void handleAddBuilding() {
+        int buildingChoice = view.getBuildingChoice();
+        if (buildingChoice == 10) return;
+
+        Optional<BuildingPosition> position = getBuildingPosition();
+        position.ifPresentOrElse(
+                pos -> addBuildingAtPosition(buildingChoice, pos),
+                () -> view.displayErrorMessage("Invalid building position")
+        );
+    }
+
+    private Optional<BuildingPosition> getBuildingPosition() {
+        int x = view.getBuildingPositionX();
+        int y = view.getBuildingPositionY();
+        return Optional.of(new BuildingPosition(x, y));
+    }
+
+    private void addBuildingAtPosition(int buildingChoice, BuildingPosition position) {
+        if (manager.addBuilding(buildingChoice, position.x(), position.y())) {
+            view.displaySuccessMessage("Building is under construction at (" + position.x() + ", " + position.y() + ").");
+        } else {
+            view.displayErrorMessage("Invalid position, position already occupied, or not enough resources.");
+        }
+    }
+
+    private void handleAssignToBuilding() {
+        // Si il n'y a pas de bâtiments, on affiche un message d'erreur et on retourne
+        if (manager.getBuildings().isEmpty()) {
+            view.displayErrorMessage("No buildings available.");
+            return;
+        }
+        Optional<BuildingAssignment> assignment = getBuildingAssignment();
+        assignment.ifPresentOrElse(
+                this::performBuildingAssignment,
+                () -> view.displayErrorMessage("Building assignment cancelled")
+        );
+    }
+
+    private Optional<BuildingAssignment> getBuildingAssignment() {
+        List<Building> buildings = manager.getBuildings();
+        view.displayBuildings(buildings);
+
+        int buildingChoice = view.selectBuilding(buildings);
+        if (buildingChoice == buildings.size()) return Optional.empty();
+
         view.displayResidents(manager.getResidents());
         int residentChoice = view.selectResident();
-        if (residentChoice == manager.getResidents().size()) return; // User cancelled
+        if (residentChoice == manager.getResidents().size()) return Optional.empty();
 
-        // Get assignment type
         int assignmentType = view.selectAssignmentType();
 
-        Resident selectedResident = manager.getResidents().get(residentChoice);
-        Building selectedBuilding = manager.getBuildings().get(buildingChoice);
+        return Optional.of(new BuildingAssignment(
+                manager.getBuildings().get(buildingChoice),
+                manager.getResidents().get(residentChoice),
+                assignmentType
+        ));
+    }
 
+    private void performBuildingAssignment(BuildingAssignment assignment) {
         try {
-            switch (assignmentType) {
-                case 1 -> { // Assign as Inhabitant
-                    manager.assignInhabitantToBuilding(selectedBuilding, selectedResident);
-                    view.displaySuccessMessage(selectedResident.getName() + " assigned as inhabitant to " + selectedBuilding.getName());
-                }
-                case 2 -> { // Assign as Worker
-                    manager.assignWorkerToBuilding(selectedBuilding, selectedResident);
-                    selectedResident.assignAsWorker();
-                    view.displaySuccessMessage(selectedResident.getName() + " assigned as worker to " + selectedBuilding.getName());
-                }
+            switch (assignment.assignmentType()) {
+                case 1 -> assignInhabitant(assignment);
+                case 2 -> assignWorker(assignment);
                 default -> view.displayErrorMessage("Invalid assignment type.");
             }
         } catch (IllegalStateException e) {
@@ -51,7 +116,33 @@ public class GameController {
         }
     }
 
-    public void viewBuildingResidents() {
+    private void assignInhabitant(BuildingAssignment assignment) {
+        manager.assignInhabitantToBuilding(assignment.building(), assignment.resident());
+        assignment.resident().assignAsInhabitant();
+        view.displaySuccessMessage(
+                assignment.resident().getName() + " assigned as inhabitant to " +
+                        assignment.building().getName()
+        );
+    }
+
+    private void assignWorker(BuildingAssignment assignment) {
+        manager.assignWorkerToBuilding(assignment.building(), assignment.resident());
+        assignment.resident().assignAsWorker();
+        view.displaySuccessMessage(
+                assignment.resident().getName() + " assigned as worker to " +
+                        assignment.building().getName()
+        );
+    }
+
+    private void displayGameState() {
+        view.displayGameState(manager.getBuildings(), manager.getResources());
+    }
+
+    private void displayResidents() {
+        view.displayResidents(manager.getResidents());
+    }
+
+    private void displayBuildingResidents() {
         List<Building> buildings = manager.getBuildings();
         if (buildings.isEmpty()) {
             view.displayErrorMessage("No buildings available.");
@@ -59,81 +150,12 @@ public class GameController {
         }
 
         view.displayBuildings(buildings);
-
         int buildingChoice = view.selectBuilding(buildings);
-        if (buildingChoice == -1) return; // User cancelled
 
-        if (buildingChoice < 0 || buildingChoice >= buildings.size()) {
-            view.displayErrorMessage("Invalid building selection.");
-            return;
-        }
-
-        Building selectedBuilding = buildings.get(buildingChoice);
-        view.displayBuildingResidents(selectedBuilding);
-    }
-
-    public void runGame() {
-        view.displayWelcomeMessage();
-
-        boolean running = true;
-        while (running) {
-            view.displayMenu();
-            int choice = view.getUserChoice();
-
-            switch (choice) {
-                case 1 -> addBuilding();
-                case 2 -> assignToBuilding(); // New option
-                case 3 -> view.displayGameState(manager.getBuildings(), manager.getResources());
-                case 4 -> view.displayResidents(manager.getResidents());
-                case 5 -> viewBuildingResidents();
-                case 6 -> simulateTurn();
-                case 7 -> view.displayMap(manager.getMap());
-                case 8 -> {
-                    running = false;
-                    view.displayGoodbyeMessage();
-                }
-                default -> view.displayInvalidChoiceMessage();
-            }
-        }
-    }
-
-    private void addBuilding() {
-        int choice = view.getBuildingChoice();
-        if (choice == 10) {
-            return;
-        }
-
-        Building building = switch (choice) {
-            case 1 -> new Farm();
-            case 2 -> new House();
-            case 3 -> new Quarry();
-            case 4 -> new WoodenCabin();
-            case 5 -> new ToolFactory();
-            case 6 -> new CementPlant();
-            case 7 -> new SteelMill();
-            case 8 -> new LumberMill();
-            case 9 -> new ApartmentBuilding();
-            default -> null;
-        };
-
-        if (building != null) {
-            int x = view.getBuildingPositionX();
-            int y = view.getBuildingPositionY();
-            if (x < 0 || y < 0 || x >= manager.getMap().getWidth() || y >= manager.getMap().getHeight()) {
-                view.displayErrorMessage("Invalid position. No building added.");
-                return;
-            }
-            if (manager.tryAddBuilding(building)) {
-                if (manager.getMap().placeBuilding(building, x, y)) {
-                    view.displaySuccessMessage(building.getName() + " is under construction at (" + x + ", " + y + ").");
-                } else {
-                    view.displayErrorMessage("Invalid position or position already occupied.");
-                }
-            } else {
-                view.displayErrorMessage("Not enough resources to build " + building.getName() + ".");
-            }
+        if (buildingChoice >= 0 && buildingChoice < buildings.size()) {
+            view.displayBuildingResidents(buildings.get(buildingChoice));
         } else {
-            view.displayErrorMessage("Invalid choice. No building added.");
+            view.displayErrorMessage("Invalid building selection.");
         }
     }
 
@@ -143,4 +165,18 @@ public class GameController {
         manager.completeBuildings();
         view.displayResources(manager.getResources());
     }
+
+    private void displayMap() {
+        view.displayMap(manager.getMap());
+    }
+
+    // Helper record to encapsulate building assignment details
+    private record BuildingAssignment(
+            Building building,
+            Resident resident,
+            int assignmentType
+    ) {}
+
+    // Helper record to encapsulate building position
+    private record BuildingPosition(int x, int y) {}
 }
