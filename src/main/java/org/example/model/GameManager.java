@@ -166,7 +166,7 @@ public class GameManager {
         return map.placeBuilding(building, x, y);
     }
 
-    private Building createBuilding(int choice) {
+    public Building createBuilding(int choice) {
         return switch (choice) {
             case 1 -> new Farm();
             case 2 -> new House();
