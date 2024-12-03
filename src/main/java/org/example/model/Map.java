@@ -104,4 +104,8 @@ public class Map {
     public int getHeight() {
         return height;
     }
+
+    public Building[][] getGrid() {
+        return grid;
+    }
 }

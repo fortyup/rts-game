@@ -1,17 +1,10 @@
 package org.example;
 
-import org.example.controller.GameController;
-import org.example.model.GameManager;
-import org.example.view.ConsoleView;
+import javafx.application.Application;
 
 public class Main {
-    public static void main(String[] args) {
-        // Initialisation du modèle, de la vue et du contrôleur
-        ConsoleView view = new ConsoleView();
-        GameManager manager = new GameManager(50, 50);
-        GameController controller = new GameController(manager, view);
 
-        // Lancer le jeu
-        controller.runGame();
+    public static void main(String[] args) {
+        Application.launch(MainApp.class, args);
     }
 }
