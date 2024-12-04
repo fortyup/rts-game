@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.text.Text?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.view.MainController">
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.view.MainController" stylesheets="css/styles.css">
     <top>
         <Label text="RTS Game" style="-fx-font-size: 24; -fx-alignment: center;"/>
     </top>
