@@ -16,6 +16,7 @@ public class MainController {
     private int selectedX = -1;
     private int selectedY = -1;
     private String selectedBuildingType = null;
+    private int turnCounter = 0;
 
     @FXML
     private GridPane mapGrid;
@@ -27,12 +28,16 @@ public class MainController {
     private Text resourcesText;
 
     @FXML
+    private Label turnCounterLabel;
+
+    @FXML
     public void initialize() {
         this.manager = new GameManager(50, 50);
         appendLog("Welcome to RTS Game!");
         updateResourcesDisplay();
         initializeMap();
         mapGrid.setOnMouseClicked(this::handleMapClick);
+        turnCounterLabel.setText("Turn: " + turnCounter);
     }
 
     @FXML
@@ -122,7 +127,41 @@ public class MainController {
         ChoiceDialog<String> dialog = new ChoiceDialog<>(buildingTypes.get(0), buildingTypes);
         dialog.setTitle("Select Building Type");
         dialog.setHeaderText("Choose a building type:");
+
+        // Add a listener to update the content text with the required resources
+        dialog.selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                String resources = getRequiredResources(newValue);
+                dialog.setContentText("Required resources: " + resources);
+            }
+        });
+
+        // Set initial content text
+        dialog.setContentText("Required resources: " + getRequiredResources(buildingTypes.get(0)));
+
+        // Set the size of the dialog
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.setPrefWidth(400);  // Set the preferred width
+        dialogPane.setPrefHeight(300); // Set the preferred height
+
         return dialog.showAndWait();
+    }
+
+    private String getRequiredResources(String buildingType) {
+        Building building;
+        switch (buildingType) {
+            case "Farm": building = new Farm(); break;
+            case "House": building = new House(); break;
+            case "Quarry": building = new Quarry(); break;
+            case "WoodenCabin": building = new WoodenCabin(); break;
+            case "ToolFactory": building = new ToolFactory(); break;
+            case "CementPlant": building = new CementPlant(); break;
+            case "SteelMill": building = new SteelMill(); break;
+            case "LumberMill": building = new LumberMill(); break;
+            case "ApartmentBuilding": building = new ApartmentBuilding(); break;
+            default: throw new IllegalArgumentException("Unknown building type: " + buildingType);
+        }
+        return building.getMaterials().toString();
     }
 
     private int getBuildingChoice(String buildingType) {
@@ -147,33 +186,91 @@ public class MainController {
             return;
         }
 
-        Optional<Building> buildingOptional = showBuildingSelectionDialog(manager.getBuildings());
-        if (buildingOptional.isEmpty()) return;
+        appendLog("Please select a building on the map.");
+        mapGrid.setOnMouseClicked(event -> {
+            Node clickedNode = event.getPickResult().getIntersectedNode();
+            if (clickedNode == null || clickedNode.getId() == null || !clickedNode.getId().startsWith("cell-")) {
+                appendLog("Clicked outside valid cells.");
+                return;
+            }
 
-        Building building = buildingOptional.get();
+            String[] parts = clickedNode.getId().split("-");
+            int x = Integer.parseInt(parts[1]);
+            int y = Integer.parseInt(parts[2]);
 
-        Optional<Resident> residentOptional = showResidentSelectionDialog(manager.getResidents());
-        if (residentOptional.isEmpty()) return;
+            Building building = manager.getMap().getGrid()[x][y];
+            if (building == null) {
+                appendLog("No building at the selected location.");
+                return;
+            }
 
-        Resident resident = residentOptional.get();
+            Optional<Resident> residentOptional = showResidentSelectionDialog(manager.getResidents());
+            if (residentOptional.isEmpty()) return;
 
-        manager.assignInhabitantToBuilding(building, resident);
-        appendLog(resident.getName() + " assigned to " + building.getName());
+            Resident resident = residentOptional.get();
+
+            ChoiceDialog<String> roleDialog = new ChoiceDialog<>("Inhabitant", "Inhabitant", "Worker");
+            roleDialog.setTitle("Select Role");
+            roleDialog.setHeaderText("Choose the role for the resident:");
+            Optional<String> roleOptional = roleDialog.showAndWait();
+            if (roleOptional.isEmpty()) return;
+
+            String role = roleOptional.get();
+            if (role.equals("Inhabitant")) {
+                manager.assignInhabitantToBuilding(building, resident);
+                appendLog(resident.getName() + " assigned as an inhabitant to " + building.getName());
+            } else {
+                manager.assignWorkerToBuilding(building, resident);
+                appendLog(resident.getName() + " assigned as a worker to " + building.getName());
+            }
+
+            mapGrid.setOnMouseClicked(this::handleMapClick); // Reset the map click handler
+        });
     }
 
     @FXML
     private void handleDisplayGameState() {
-        StringBuilder gameState = new StringBuilder("Game State:\n\n");
-        gameState.append("Resources:\n");
-        manager.getResources().forEach(resource ->
-                gameState.append(resource.getName()).append(": ").append(resource.getQuantity()).append("\n")
+        appendLog("Please select a building on the map to view its state.");
+        mapGrid.setOnMouseClicked(event -> {
+            Node clickedNode = event.getPickResult().getIntersectedNode();
+            if (clickedNode == null || clickedNode.getId() == null || !clickedNode.getId().startsWith("cell-")) {
+                appendLog("Clicked outside valid cells.");
+                return;
+            }
+
+            String[] parts = clickedNode.getId().split("-");
+            int x = Integer.parseInt(parts[1]);
+            int y = Integer.parseInt(parts[2]);
+
+            Building building = manager.getMap().getGrid()[x][y];
+            if (building == null) {
+                appendLog("No building at the selected location.");
+                return;
+            }
+
+            displayBuildingState(building);
+            mapGrid.setOnMouseClicked(this::handleMapClick); // Reset the map click handler
+        });
+    }
+
+    private void displayBuildingState(Building building) {
+        StringBuilder buildingState = new StringBuilder("Building State:\n\n");
+        buildingState.append("Building: ").append(building.getName()).append("\n");
+        buildingState.append("Size: ").append(building.getSizeX()).append("x").append(building.getSizeY()).append("\n");
+        buildingState.append("Materials: ").append(building.getMaterials()).append("\n");
+        buildingState.append("Time to build: ").append(building.getTimeToBuild()).append("\n");
+        buildingState.append("Inhabitants: ").append(building.getInhabitants().size()).append("\n");
+        buildingState.append("Workers: ").append(building.getWorkers().size()).append("\n");
+
+        building.getInhabitants().forEach(inhabitant ->
+                buildingState.append(" - Inhabitant: ").append(inhabitant.getName()).append("\n")
         );
-        gameState.append("\nBuildings:\n");
-        manager.getBuildings().forEach(building ->
-                gameState.append(building.getName()).append(" at (")
-                        .append(building.getSizeX()).append(", ").append(building.getSizeY()).append(")\n")
+
+        building.getWorkers().forEach(worker ->
+                buildingState.append(" - Worker: ").append(worker.getName()).append("\n")
         );
-        appendLog(gameState.toString());
+
+        appendLog(buildingState.toString());
     }
 
     @FXML
@@ -183,7 +280,9 @@ public class MainController {
         manager.completeBuildings();
         initializeMap();
         updateResourcesDisplay();
-        appendLog("Turn progressed: resources consumed and produced.");
+        turnCounter++;
+        turnCounterLabel.setText("Turn: " + turnCounter);
+        appendLog("Turn progressed: resources consumed and produced. Current turn: " + turnCounter);
     }
 
     @FXML
