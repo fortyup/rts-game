@@ -92,7 +92,12 @@ public abstract class Building {
 
     public void addInhabitant(Resident resident) {
         if (inhabitants.size() < maxInhabitants) {
+            if (resident.isWorker()) {
+                resident.removeAsWorker();
+                workers.remove(resident);
+            }
             inhabitants.add(resident);
+            resident.assignAsInhabitant();
         } else {
             throw new IllegalStateException("Maximum number of inhabitants reached.");
         }
@@ -100,7 +105,12 @@ public abstract class Building {
 
     public void addWorker(Resident resident) {
         if (workers.size() < maxWorkers) {
+            if (resident.isInhabitant()) {
+                resident.removeAsInhabitant();
+                inhabitants.remove(resident);
+            }
             workers.add(resident);
+            resident.assignAsWorker();
         } else {
             throw new IllegalStateException("Maximum number of workers reached.");
         }

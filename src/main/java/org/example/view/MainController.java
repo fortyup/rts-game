@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import org.example.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -209,7 +210,20 @@ public class MainController {
 
             Resident resident = residentOptional.get();
 
-            ChoiceDialog<String> roleDialog = new ChoiceDialog<>("Inhabitant", "Inhabitant", "Worker");
+            List<String> roles = new ArrayList<>();
+            if (building.getMaxInhabitants() > 0) {
+                roles.add("Inhabitant");
+            }
+            if (building.getMaxWorkers() > 0) {
+                roles.add("Worker");
+            }
+
+            if (roles.isEmpty()) {
+                appendLog("The selected building cannot have inhabitants or workers.");
+                return;
+            }
+
+            ChoiceDialog<String> roleDialog = new ChoiceDialog<>(roles.get(0), roles);
             roleDialog.setTitle("Select Role");
             roleDialog.setHeaderText("Choose the role for the resident:");
             Optional<String> roleOptional = roleDialog.showAndWait();
@@ -259,8 +273,10 @@ public class MainController {
         buildingState.append("Size: ").append(building.getSizeX()).append("x").append(building.getSizeY()).append("\n");
         buildingState.append("Materials: ").append(building.getMaterials()).append("\n");
         buildingState.append("Time to build: ").append(building.getTimeToBuild()).append("\n");
-        buildingState.append("Inhabitants: ").append(building.getInhabitants().size()).append("\n");
-        buildingState.append("Workers: ").append(building.getWorkers().size()).append("\n");
+        buildingState.append("Inhabitants: ").append(building.getInhabitants().size()).append("/")
+                .append(building.getMaxInhabitants()).append("\n");
+        buildingState.append("Workers: ").append(building.getWorkers().size()).append("/")
+                .append(building.getMaxWorkers()).append("\n");
 
         building.getInhabitants().forEach(inhabitant ->
                 buildingState.append(" - Inhabitant: ").append(inhabitant.getName()).append("\n")
