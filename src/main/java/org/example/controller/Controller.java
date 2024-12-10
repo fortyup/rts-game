@@ -48,28 +48,38 @@ public class Controller {
                     int x = view.getSelectedX();
                     int y = view.getSelectedY();
 
-                    // Vérifiez si l'emplacement est libre
-                    boolean isLocationFree = model.getBuildings().stream()
-                            .noneMatch(existingBuilding ->
-                                    existingBuilding.getX() < x + createBuilding(buildingType, x, y).getSizeX() &&
-                                            existingBuilding.getX() + existingBuilding.getSizeX() > x &&
-                                            existingBuilding.getY() < y + createBuilding(buildingType, x, y).getSizeY() &&
-                                            existingBuilding.getY() + existingBuilding.getSizeY() > y
-                            );
+                    Building building = createBuilding(buildingType, x, y);
 
-                    if (isLocationFree) {
-                        Building building = createBuilding(buildingType, x, y);
-                        building.setX(x);
-                        building.setY(y);
+                    // Vérifiez si les ressources nécessaires sont disponibles
+                    if (areResourcesAvailable(building)) {
+                        // Vérifiez si l'emplacement est libre
+                        boolean isLocationFree = model.getBuildings().stream()
+                                .noneMatch(existingBuilding ->
+                                        existingBuilding.getX() < x + building.getSizeX() &&
+                                                existingBuilding.getX() + existingBuilding.getSizeX() > x &&
+                                                existingBuilding.getY() < y + building.getSizeY() &&
+                                                existingBuilding.getY() + existingBuilding.getSizeY() > y
+                                );
 
-                        commandManager.addCommand(() -> {
-                            model.addBuilding(building);
-                            view.updateBuildings(model.getBuildings());
-                        });
+                        if (isLocationFree) {
+                            // Déduisez les ressources nécessaires
+                            deductResources(building);
 
-                        view.showPopup("Bâtiment ajouté : " + buildingType + " à la position (" + x + ", " + y + ").");
+                            building.setX(x);
+                            building.setY(y);
+
+                            commandManager.addCommand(() -> {
+                                model.addBuilding(building);
+                                view.updateBuildings(model.getBuildings());
+                                updateResourcesView(); // Mettez à jour l'affichage des ressources
+                            });
+
+                            view.showPopup("Bâtiment ajouté : " + buildingType + " à la position (" + x + ", " + y + ").");
+                        } else {
+                            view.showPopup("Impossible de placer le bâtiment. Cet emplacement est déjà occupé.");
+                        }
                     } else {
-                        view.showPopup("Impossible de placer le bâtiment. Cet emplacement est déjà occupé.");
+                        view.showPopup("Ressources insuffisantes pour construire ce bâtiment.");
                     }
                 } else {
                     view.showPopup("Veuillez sélectionner un bâtiment valide.");
@@ -77,6 +87,7 @@ public class Controller {
             });
         });
 
+        // Les autres actions restent inchangées
         view.setOnAddResidentAction((ActionEvent event) ->
                 commandManager.addCommand(() -> {
                     String processedTicket = model.processTicket();
@@ -102,6 +113,31 @@ public class Controller {
                 System.exit(0);
             });
         });
+    }
+
+    private boolean areResourcesAvailable(Building building) {
+        for (Resource requiredResource : building.getMaterials()) {
+            Resource availableResource = resources.stream()
+                    .filter(resource -> resource.getName().equals(requiredResource.getName()))
+                    .findFirst()
+                    .orElse(null);
+            if (availableResource == null || availableResource.getQuantity() < requiredResource.getQuantity()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void deductResources(Building building) {
+        for (Resource requiredResource : building.getMaterials()) {
+            Resource availableResource = resources.stream()
+                    .filter(resource -> resource.getName().equals(requiredResource.getName()))
+                    .findFirst()
+                    .orElse(null);
+            if (availableResource != null) {
+                availableResource.setQuantity(availableResource.getQuantity() - requiredResource.getQuantity());
+            }
+        }
     }
 
     private Building createBuilding(String buildingType, int x, int y) {
