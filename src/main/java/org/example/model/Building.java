@@ -15,6 +15,8 @@ public abstract class Building {
     private final List<Resource> consumption;
     private final List<Resource> production;
     private int timeToBuild;
+    private int x;
+    private int y;
 
     protected Building(String name, int sizeX, int sizeY, int maxInhabitants, int maxWorkers, List<Resource> materials, List<Resource> consumption, List<Resource> production, int timeToBuild) {
         this.name = name;
@@ -72,6 +74,22 @@ public abstract class Building {
 
     public int getTimeToBuild() {
         return timeToBuild;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public void decrementTimeToBuild() {

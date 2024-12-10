@@ -1,18 +1,17 @@
 package org.example;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.controller.Controller;
+import org.example.model.Model;
+import org.example.view.View;
 
 public class MainApp extends Application {
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view/MainView.fxml"));
-        Scene scene = new Scene(loader.load());
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("RTS Game");
-        primaryStage.show();
+    public void start(Stage primaryStage) {
+        Model model = new Model();
+        View view = new View(primaryStage);
+        new Controller(view, model); // Relie la vue et le modèle via le contrôleur
     }
 
     public static void main(String[] args) {
