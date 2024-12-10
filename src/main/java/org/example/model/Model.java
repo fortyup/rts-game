@@ -44,6 +44,10 @@ public class Model implements Subject {
         return new ArrayList<>(buildings);
     }
 
+    public void addResident(Resident resident) {
+        notifyObservers();
+    }
+
     public int getTurnCount() {
         return turnCount;
     }

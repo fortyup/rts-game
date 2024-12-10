@@ -13,16 +13,19 @@ public class Controller {
     private final Model model;
     private final CommandManager commandManager;
     private final List<Resource> resources;
+    private final List<Resident> residents;
 
     public Controller(View view, Model model) {
         this.view = view;
         this.model = model;
         this.resources = new ArrayList<>();
+        this.residents = new ArrayList<>();
         this.commandManager = new CommandManager();
 
         model.addObserver(view);
         initializeResources();
-        updateResourcesView(); // Ajoutez cet appel
+        initializeResidents();
+        updateResourcesView();
         initializeViewActions();
     }
 
@@ -37,6 +40,16 @@ public class Controller {
                 new Resource("Cement", 0),
                 new Resource("Lumber", 0),
                 new Resource("Tool", 0)
+        ));
+    }
+
+    private void initializeResidents() {
+        residents.addAll(List.of(
+                new Resident("Alice"),
+                new Resident("Bob"),
+                new Resident("Charlie"),
+                new Resident("David"),
+                new Resident("Eve")
         ));
     }
 
@@ -87,14 +100,24 @@ public class Controller {
             });
         });
 
-        // Les autres actions restent inchangées
         view.setOnAddResidentAction((ActionEvent event) ->
-                commandManager.addCommand(() -> {
-                    String processedTicket = model.processTicket();
-                    if (processedTicket != null) {
-                        view.showPopup("Ticket traité : " + processedTicket);
+                view.showResidentSelectionPopup((ActionEvent selectionEvent) -> {
+                    String residentName = (String) selectionEvent.getSource();
+                    if (residentName != null && !residentName.trim().isEmpty()) {
+                        Resident resident = residents.stream()
+                                .filter(r -> r.getName().equals(residentName))
+                                .findFirst()
+                                .orElse(null);
+                        if (resident != null) {
+                            commandManager.addCommand(() -> {
+                                model.addResident(resident);
+                                view.showPopup("Résident ajouté : " + residentName);
+                            });
+                        } else {
+                            view.showPopup("Résident invalide. Veuillez sélectionner un résident valide.");
+                        }
                     } else {
-                        view.showPopup("Aucun ticket à traiter.");
+                        view.showPopup("Veuillez sélectionner un résident valide.");
                     }
                 })
         );
@@ -102,8 +125,10 @@ public class Controller {
         view.setOnAddNextTurnAction((ActionEvent event) -> {
             commandManager.addCommand(() -> {
                 model.incrementTurnCount();
+                updateResources();
                 view.updateTurnCount(model.getTurnCount());
                 view.updateBuildings(model.getBuildings());
+                //Afficher les info des batiments
             });
         });
 
@@ -176,5 +201,22 @@ public class Controller {
             resourcesInfo.setLength(resourcesInfo.length() - 2);
         }
         view.updateResources(resourcesInfo.toString());
+    }
+
+    // Les batiments produisent et consomment des ressources
+    private void updateResources() {
+        for (Building building : model.getBuildings()) {
+            if (building.isConstructed()) {
+                // Consommer les ressources nécessaires
+                for (Resource resource : building.getConsumption()) {
+                    building.consume(resource);
+                }
+                // Produire les ressources
+                for (Resource resource : building.getProduction()) {
+                    building.produce(resource);
+                }
+            }
+        }
+        updateResourcesView();
     }
 }

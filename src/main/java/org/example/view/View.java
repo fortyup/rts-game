@@ -152,6 +152,52 @@ public class View implements Observer {
         popupStage.showAndWait();
     }
 
+    public void showResidentSelectionPopup(EventHandler<ActionEvent> onConfirm) {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("Sélectionner un résident");
+
+        Label label = new Label("Choisissez un résident à ajouter :");
+        ChoiceBox<String> residentChoiceBox = new ChoiceBox<>();
+        residentChoiceBox.getItems().addAll("Alice", "Bob", "Charlie", "David", "Eve");
+
+        Button confirmButton = new Button("Confirmer");
+        confirmButton.setOnAction(event -> {
+            onConfirm.handle(new ActionEvent(residentChoiceBox.getValue(), null));
+            popupStage.close();
+        });
+
+        VBox layout = new VBox(10, label, residentChoiceBox, confirmButton);
+        layout.setPadding(new Insets(20));
+
+        Scene scene = new Scene(layout, 300, 200);
+        popupStage.setScene(scene);
+        popupStage.showAndWait();
+    }
+
+    public void showResidentTypeSelectionPopup(EventHandler<ActionEvent> onConfirm) {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("Sélectionner le type de résident");
+
+        Label label = new Label("Choisissez le type de résident :");
+        ChoiceBox<String> residentTypeChoiceBox = new ChoiceBox<>();
+        residentTypeChoiceBox.getItems().addAll("Worker", "Inhabitant");
+
+        Button confirmButton = new Button("Confirmer");
+        confirmButton.setOnAction(event -> {
+            onConfirm.handle(new ActionEvent(residentTypeChoiceBox.getValue(), null));
+            popupStage.close();
+        });
+
+        VBox layout = new VBox(10, label, residentTypeChoiceBox, confirmButton);
+        layout.setPadding(new Insets(20));
+
+        Scene scene = new Scene(layout, 300, 200);
+        popupStage.setScene(scene);
+        popupStage.showAndWait();
+    }
+
     public int getSelectedX() {
         return selectedX;
     }
